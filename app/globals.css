@@ -3,31 +3,36 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+	--bg-green: #00703a;
+	--bg-light-grey: #f9f9f9;
+	--heading-h1: 48px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+html,
+body {
+	margin: 0;
+	box-sizing: border-box;
+	padding: 0;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+	color: rgb(var(--foreground-rgb));
+	background: var(--bg-light-grey);
+	width: 100vw;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+h1 {
+	font-size: var(--heading-h1);
+	color: #fff;
+	font-weight: 760;
+	font-family: 'SF Pro', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+	line-height: 3rem;
+	margin-bottom: 1rem;
+	letter-spacing: -1px;
+}
+
+p {
+	color: #fff;
+	font-size: 0.875rem;
+	font-weight: 400;
 }
