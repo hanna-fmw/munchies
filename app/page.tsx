@@ -10,7 +10,16 @@ import { useEffect, useState } from 'react'
 type Restaurant = {
 	id: string
 	name: string
-	filter_ids: number[]
+	filter_ids: string[]
+	image_url?: string
+	delivery_time_minutes?: number
+	price_range_id?: string
+}
+
+type Filter = {
+	id: string
+	name: string
+	image_url: string
 }
 
 // const restaurants = [
@@ -53,7 +62,7 @@ type Restaurant = {
 export default function Home() {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(true)
 	const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>([])
-	const [activeFilters, setActiveFilters] = useState<number[]>([])
+	const [activeFilters, setActiveFilters] = useState<string[]>([])
 	const [restaurants, setRestaurants] = useState<Restaurant[]>([])
 	const [filters, setFilters] = useState<any>([])
 
@@ -74,7 +83,7 @@ export default function Home() {
 		getAllFilters()
 	}, [])
 
-	const toggleFilter = (filter: number) => {
+	const toggleFilter = (filter: string) => {
 		let newActiveFilters = []
 		if (activeFilters.includes(filter)) {
 			newActiveFilters = activeFilters.filter((f) => f !== filter)
@@ -86,7 +95,7 @@ export default function Home() {
 		filterRestaurants(newActiveFilters)
 	}
 
-	const filterRestaurants = (activeCategories: number[]) => {
+	const filterRestaurants = (activeCategories: string[]) => {
 		const filtered = restaurants.filter((restaurant) => restaurant.filter_ids.some((fid) => activeCategories.includes(fid)))
 
 		const uniqueFiltered = filtered.reduce<Restaurant[]>((acc, current) => {
@@ -107,7 +116,7 @@ export default function Home() {
 		<main className={`${styles.main} ${styles.onlyMobile}`}>
 			{isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
 			<div className={styles.btn_container}>
-				{filters.map((filter) => {
+				{filters.map((filter: Filter) => {
 					return (
 						<button
 							key={filter.id}
