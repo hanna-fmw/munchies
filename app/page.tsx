@@ -120,30 +120,30 @@ export default function Home() {
 		setFilteredRestaurants(uniqueFiltered)
 	}
 
-	// const filterByDeliveryTime = (minTime: number, maxTime: number = Infinity) => {
-	// 	const restaurantsFilteredByTimeRange = restaurants.reduce<string[]>((acc, restaurant) => {
-	// 		if (restaurant.delivery_time_minutes > minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)) {
-	// 			return [...acc, restaurant.name]
-	// 		}
-	// 		return acc
-	// 	}, [])
+	const filterByDeliveryTime = (minTime: number, maxTime: number = Infinity) => {
+		const restaurantsFilteredByTimeRange = restaurants.reduce<string[]>((acc, restaurant) => {
+			if (restaurant.delivery_time_minutes > minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)) {
+				return [...acc, restaurant.name]
+			}
+			return acc
+		}, [])
 
-	// 	setDeliveryRange(restaurantsFilteredByTimeRange)
-	// 	console.log('Updated deliveryRange', restaurantsFilteredByTimeRange)
-	// }
-	const filterByDeliveryTime = (minTime: number, maxTime: number, label: string) => {
-		const restaurantsFilteredByTimeRange = restaurants.filter(
-			(restaurant) => restaurant.delivery_time_minutes > minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)
-		)
-
-		setActiveTimeRangeLabel(label) // Update the active time range label
-		setFilteredRestaurants(restaurantsFilteredByTimeRange)
+		setDeliveryRange(restaurantsFilteredByTimeRange)
+		console.log('Updated deliveryRange', restaurantsFilteredByTimeRange)
 	}
+	// const filterByDeliveryTime = (minTime: number, maxTime: number, label: string) => {
+	// 	const restaurantsFilteredByTimeRange = restaurants.filter(
+	// 		(restaurant) => restaurant.delivery_time_minutes > minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)
+	// 	)
+
+	// 	setActiveTimeRangeLabel(label) // Update the active time range label
+	// 	setFilteredRestaurants(restaurantsFilteredByTimeRange)
+	// }
 
 	return (
 		<main className={`${styles.main} ${styles.onlyMobile}`}>
 			{isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
-			{/* <section>
+			<section>
 				<h2>Delivery Time</h2>
 				<button onClick={() => filterByDeliveryTime(0, 10)} className={styles.delivery_time_btn}>
 					0-10
@@ -162,8 +162,8 @@ export default function Home() {
 						<div key={i}>{restaurant}</div>
 					))}
 				</div>
-			</section> */}
-			<section>
+			</section>
+			{/* <section>
 				<h2>Delivery Time</h2>
 				<button
 					onClick={() => filterByDeliveryTime(0, 10, '0-10')}
@@ -185,7 +185,7 @@ export default function Home() {
 					className={`${styles.delivery_time_btn} ${activeTimeRangeLabel === '1 hour+' ? styles.active : ''}`}>
 					1 hour+
 				</button>
-			</section>
+			</section> */}
 			<div className={styles.btn_container}>
 				{filters.map((filter: Filter) => {
 					return (
