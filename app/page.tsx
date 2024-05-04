@@ -1,7 +1,7 @@
 'use client'
 import styles from './home.module.css'
 import Modal from './components/modal/Modal'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 //1. Korv och Hamburgare ska visas på varsin knapp (hämta allt på /categories)
 //2. Om någon trycker på "Hamburgare" som har id 4, så ska du leta i /restaurants efter alla
@@ -13,47 +13,66 @@ type Restaurant = {
 	filter_ids: number[]
 }
 
-const restaurants = [
-	{
-		name: 'Hannas bodega',
-		filter_ids: [1, 4],
-		id: '111',
-	},
-	{
-		name: 'Annikas hak',
-		filter_ids: [4],
-		id: '222',
-	},
-	{
-		name: 'Måns Coffee Shop',
-		filter_ids: [4, 1],
-		id: '333',
-	},
-]
+// const restaurants = [
+// 	{
+// 		name: 'Hannas bodega',
+// 		filter_ids: [1, 4],
+// 		id: '111',
+// 	},
+// 	{
+// 		name: 'Annikas hak',
+// 		filter_ids: [4],
+// 		id: '222',
+// 	},
+// 	{
+// 		name: 'Måns Coffee Shop',
+// 		filter_ids: [4, 1],
+// 		id: '333',
+// 	},
+// ]
 
-const filters = [
-	{
-		name: 'Hamburgare',
-		id: 4,
-	},
-	{
-		name: 'Korv',
-		id: 1,
-	},
-	{
-		name: 'Pizza',
-		id: 2,
-	},
-	{
-		name: 'Taco',
-		id: 3,
-	},
-]
+// const filters = [
+// 	{
+// 		name: 'Hamburgare',
+// 		id: 4,
+// 	},
+// 	{
+// 		name: 'Korv',
+// 		id: 1,
+// 	},
+// 	{
+// 		name: 'Pizza',
+// 		id: 2,
+// 	},
+// 	{
+// 		name: 'Taco',
+// 		id: 3,
+// 	},
+// ]
 
 export default function Home() {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(true)
 	const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>([])
 	const [activeFilters, setActiveFilters] = useState<number[]>([])
+	const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+	const [filters, setFilters] = useState<any>([])
+
+	const getAllRestaurants = async () => {
+		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/restaurants')
+		const data = await res.json()
+		setRestaurants(data.restaurants)
+	}
+
+	const getAllFilters = async () => {
+		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/filter')
+		const data = await res.json()
+		setFilters(data.filters)
+	}
+
+	useEffect(() => {
+		getAllRestaurants()
+		getAllFilters()
+	}, [])
 
 	const toggleFilter = (filter: number) => {
 		let newActiveFilters = []
@@ -106,7 +125,11 @@ export default function Home() {
 					})}
 				</div>
 			) : (
-				<div>No filters applied, select a category - HÄR SKA JAG KÖRA GET ALLA RESTAURANGER, antagligen i en useEffect</div>
+				<div>
+					{restaurants.map((restaurant, i) => {
+						return <div key={i}>{restaurant.name}</div>
+					})}
+				</div>
 			)}
 		</main>
 	)
