@@ -19,3 +19,13 @@
 .button {
 	margin: 0 auto;
 }
+
+.onlyMobile {
+	display: block;
+}
+
+@media (min-width: 376px) {
+	.onlyMobile {
+		display: none;
+	}
+}

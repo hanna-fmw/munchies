@@ -1,5 +1,23 @@
-@media (min-width: 376px) {
-	.onlyMobile {
-		display: none;
-	}
+.btn_container {
+	width: 100vw;
+	display: flex;
+	justify-content: center;
+	gap: 2rem;
+	padding-block: 3rem;
+}
+
+.btn {
+	color: purple;
+	border: 1px solid purple;
+	padding: 4px 6px;
+	cursor: pointer;
+}
+
+.main {
+	display: flex;
+	flex-direction: column;
+}
+
+.active_filter {
+	background-color: rgb(216, 193, 232);
 }

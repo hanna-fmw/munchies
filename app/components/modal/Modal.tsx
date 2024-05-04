@@ -1,18 +1,18 @@
-'use client';
-import React, { Dispatch, SetStateAction } from 'react';
-import { useState } from 'react';
-import Image from 'next/image';
-import styles from './modal.module.css';
-import Button from '../button/Button';
-import logotype from '@/public/Logo.png';
+'use client'
+import React, { Dispatch, SetStateAction } from 'react'
+import { useState } from 'react'
+import Image from 'next/image'
+import styles from './modal.module.css'
+import Button from '../button/Button'
+import logotype from '@/public/Logo.png'
 
 type ModalProps = {
-	setIsModalOpen: Dispatch<SetStateAction<boolean>>;
-};
+	setIsModalOpen: Dispatch<SetStateAction<boolean>>
+}
 
 const Modal = ({ setIsModalOpen }: ModalProps) => {
 	return (
-		<section className={styles.modal}>
+		<section className={`${styles.modal} ${styles.onlyMobile}`}>
 			<Image src={logotype} width={100} height={100} alt='Munchies Logotype' className={styles.logotype} />
 			<div>
 				<h1>Treat yourself.</h1>
@@ -22,7 +22,7 @@ const Modal = ({ setIsModalOpen }: ModalProps) => {
 				<Button onClick={() => setIsModalOpen(false)}>Continue</Button>
 			</div>
 		</section>
-	);
-};
+	)
+}
 
-export default Modal;
+export default Modal
