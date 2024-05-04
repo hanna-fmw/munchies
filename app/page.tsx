@@ -3,10 +3,6 @@ import styles from './home.module.css'
 import Modal from './components/modal/Modal'
 import { useEffect, useState } from 'react'
 
-//1. Korv och Hamburgare ska visas på varsin knapp (hämta allt på /categories)
-//2. Om någon trycker på "Hamburgare" som har id 4, så ska du leta i /restaurants efter alla
-//restauranger vars category_ids innehåller 4
-
 type Restaurant = {
 	id: string
 	name: string
@@ -22,58 +18,19 @@ type Filter = {
 	image_url: string
 }
 
-type DeliveryTime = {
-	deliveryTimeFilers: number
-}
-
-// const restaurants = [
-// 	{
-// 		name: 'Hannas bodega',
-// 		filter_ids: [1, 4],
-// 		id: '111',
-// 	},
-// 	{
-// 		name: 'Annikas hak',
-// 		filter_ids: [4],
-// 		id: '222',
-// 	},
-// 	{
-// 		name: 'Måns Coffee Shop',
-// 		filter_ids: [4, 1],
-// 		id: '333',
-// 	},
-// ]
-
-// const filters = [
-// 	{
-// 		name: 'Hamburgare',
-// 		id: 4,
-// 	},
-// 	{
-// 		name: 'Korv',
-// 		id: 1,
-// 	},
-// 	{
-// 		name: 'Pizza',
-// 		id: 2,
-// 	},
-// 	{
-// 		name: 'Taco',
-// 		id: 3,
-// 	},
-// ]
-
 export default function Home() {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(true)
 	const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>([])
-	//Track active filters
 	const [activeFilters, setActiveFilters] = useState<string[]>([])
 	const [restaurants, setRestaurants] = useState<Restaurant[]>([])
 	const [filters, setFilters] = useState<any>([])
 	const [deliveryRange, setDeliveryRange] = useState<string[]>([])
-	//Track active delivery time range (to integrate it into the toggle function further down)
-	// const [activeDeliveryRange, setActiveDeliveryRange] = useState({ minTime: 0, maxTime: Infinity })
-	const [activeTimeRangeLabel, setActiveTimeRangeLabel] = useState<string>('')
+	const [activeTimeRange, setActiveTimeRange] = useState<number | null>(null) // State to track the active time range button
+
+	useEffect(() => {
+		getAllRestaurants()
+		getAllFilters()
+	}, [])
 
 	const getAllRestaurants = async () => {
 		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/restaurants')
@@ -87,11 +44,6 @@ export default function Home() {
 		setFilters(data.filters)
 	}
 
-	useEffect(() => {
-		getAllRestaurants()
-		getAllFilters()
-	}, [])
-
 	const toggleFilter = (filter: string) => {
 		let newActiveFilters = []
 		if (activeFilters.includes(filter)) {
@@ -100,7 +52,6 @@ export default function Home() {
 			newActiveFilters = [...activeFilters, filter]
 		}
 		setActiveFilters(newActiveFilters)
-
 		filterRestaurants(newActiveFilters)
 	}
 
@@ -109,7 +60,6 @@ export default function Home() {
 
 		const uniqueFiltered = filtered.reduce<Restaurant[]>((acc, current) => {
 			const x = acc.find((element) => element.id === current.id)
-
 			if (!x) {
 				return acc.concat([current])
 			} else {
@@ -120,7 +70,7 @@ export default function Home() {
 		setFilteredRestaurants(uniqueFiltered)
 	}
 
-	const filterByDeliveryTime = (minTime: number, maxTime: number = Infinity) => {
+	const filterByDeliveryTime = (minTime: number, maxTime: number = Infinity, index: number) => {
 		const restaurantsFilteredByTimeRange = restaurants.reduce<string[]>((acc, restaurant) => {
 			if (restaurant.delivery_time_minutes > minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)) {
 				return [...acc, restaurant.name]
@@ -129,86 +79,50 @@ export default function Home() {
 		}, [])
 
 		setDeliveryRange(restaurantsFilteredByTimeRange)
+		setActiveTimeRange(index) // Update the active time range index
 		console.log('Updated deliveryRange', restaurantsFilteredByTimeRange)
 	}
-	// const filterByDeliveryTime = (minTime: number, maxTime: number, label: string) => {
-	// 	const restaurantsFilteredByTimeRange = restaurants.filter(
-	// 		(restaurant) => restaurant.delivery_time_minutes > minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)
-	// 	)
-
-	// 	setActiveTimeRangeLabel(label) // Update the active time range label
-	// 	setFilteredRestaurants(restaurantsFilteredByTimeRange)
-	// }
 
 	return (
 		<main className={`${styles.main} ${styles.onlyMobile}`}>
 			{isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
 			<section>
 				<h2>Delivery Time</h2>
-				<button onClick={() => filterByDeliveryTime(0, 10)} className={styles.delivery_time_btn}>
-					0-10
-				</button>
-				<button onClick={() => filterByDeliveryTime(11, 30)} className={styles.delivery_time_btn}>
-					10-30
-				</button>
-				<button onClick={() => filterByDeliveryTime(31, 60)} className={styles.delivery_time_btn}>
-					30-60
-				</button>
-				<button onClick={() => filterByDeliveryTime(61)} className={styles.delivery_time_btn}>
-					1 hour+
-				</button>
+				{['0-10', '10-30', '30-60', '1 hour+'].map((range, index) => (
+					<button
+						key={index}
+						onClick={() => filterByDeliveryTime(index * 10 + 1, (index + 1) * 10, index)}
+						className={`${styles.delivery_time_btn} ${activeTimeRange === index ? styles.active : ''}`}>
+						{range}
+					</button>
+				))}
 				<div>
 					{deliveryRange.map((restaurant, i) => (
 						<div key={i}>{restaurant}</div>
 					))}
 				</div>
 			</section>
-			{/* <section>
-				<h2>Delivery Time</h2>
-				<button
-					onClick={() => filterByDeliveryTime(0, 10, '0-10')}
-					className={`${styles.delivery_time_btn} ${activeTimeRangeLabel === '0-10' ? styles.active : ''}`}>
-					0-10
-				</button>
-				<button
-					onClick={() => filterByDeliveryTime(11, 30, '10-30')}
-					className={`${styles.delivery_time_btn} ${activeTimeRangeLabel === '10-30' ? styles.active : ''}`}>
-					10-30
-				</button>
-				<button
-					onClick={() => filterByDeliveryTime(31, 60, '30-60')}
-					className={`${styles.delivery_time_btn} ${activeTimeRangeLabel === '30-60' ? styles.active : ''}`}>
-					30-60
-				</button>
-				<button
-					onClick={() => filterByDeliveryTime(61, Infinity, '1 hour+')}
-					className={`${styles.delivery_time_btn} ${activeTimeRangeLabel === '1 hour+' ? styles.active : ''}`}>
-					1 hour+
-				</button>
-			</section> */}
 			<div className={styles.btn_container}>
-				{filters.map((filter: Filter) => {
-					return (
-						<button
-							key={filter.id}
-							className={`${styles.btn} ${activeFilters.includes(filter.id) ? styles.active_filter : ''}`}
-							onClick={() => toggleFilter(filter.id)}>
-							{filter.name}
-						</button>
-					)
-				})}
+				{filters.map((filter: Filter) => (
+					<button
+						key={filter.id}
+						className={`${styles.btn} ${activeFilters.includes(filter.id) ? styles.active_filter : ''}`}
+						onClick={() => toggleFilter(filter.id)}>
+						{filter.name}
+					</button>
+				))}
 			</div>
 			{filteredRestaurants.length > 0 ? (
 				<div>
-					{filteredRestaurants.map((filteredRestaurant, i) => {
-						return <div key={i}>{filteredRestaurant.name}</div>
-					})}
+					{filteredRestaurants.map((filteredRestaurant, i) => (
+						<div key={i}>{filteredRestaurant.name}</div>
+					))}
 				</div>
 			) : (
 				<div>
-					{restaurants.map((restaurant, i) => {
-						return <div key={i}>{restaurant.name}</div>
-					})}
+					{restaurants.map((restaurant, i) => (
+						<div key={i}>{restaurant.name}</div>
+					))}
 				</div>
 			)}
 		</main>
