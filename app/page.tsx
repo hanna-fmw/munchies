@@ -72,7 +72,8 @@ export default function Home() {
 	const [filters, setFilters] = useState<any>([])
 	const [deliveryRange, setDeliveryRange] = useState<string[]>([])
 	//Track active delivery time range (to integrate it into the toggle function further down)
-	const [activeDeliveryRange, setActiveDeliveryRange] = useState({ minTime: 0, maxTime: Infinity })
+	// const [activeDeliveryRange, setActiveDeliveryRange] = useState({ minTime: 0, maxTime: Infinity })
+	const [activeTimeRangeLabel, setActiveTimeRangeLabel] = useState<string>('')
 
 	const getAllRestaurants = async () => {
 		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/restaurants')
@@ -119,22 +120,30 @@ export default function Home() {
 		setFilteredRestaurants(uniqueFiltered)
 	}
 
-	const filterByDeliveryTime = (minTime: number, maxTime: number = Infinity) => {
-		const restaurantsFilteredByTimeRange = restaurants.reduce<string[]>((acc, restaurant) => {
-			if (restaurant.delivery_time_minutes > minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)) {
-				return [...acc, restaurant.name]
-			}
-			return acc
-		}, [])
+	// const filterByDeliveryTime = (minTime: number, maxTime: number = Infinity) => {
+	// 	const restaurantsFilteredByTimeRange = restaurants.reduce<string[]>((acc, restaurant) => {
+	// 		if (restaurant.delivery_time_minutes > minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)) {
+	// 			return [...acc, restaurant.name]
+	// 		}
+	// 		return acc
+	// 	}, [])
 
-		setDeliveryRange(restaurantsFilteredByTimeRange)
-		console.log('Updated deliveryRange', restaurantsFilteredByTimeRange)
+	// 	setDeliveryRange(restaurantsFilteredByTimeRange)
+	// 	console.log('Updated deliveryRange', restaurantsFilteredByTimeRange)
+	// }
+	const filterByDeliveryTime = (minTime: number, maxTime: number, label: string) => {
+		const restaurantsFilteredByTimeRange = restaurants.filter(
+			(restaurant) => restaurant.delivery_time_minutes > minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)
+		)
+
+		setActiveTimeRangeLabel(label) // Update the active time range label
+		setFilteredRestaurants(restaurantsFilteredByTimeRange)
 	}
 
 	return (
 		<main className={`${styles.main} ${styles.onlyMobile}`}>
 			{isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
-			<section>
+			{/* <section>
 				<h2>Delivery Time</h2>
 				<button onClick={() => filterByDeliveryTime(0, 10)} className={styles.delivery_time_btn}>
 					0-10
@@ -153,6 +162,29 @@ export default function Home() {
 						<div key={i}>{restaurant}</div>
 					))}
 				</div>
+			</section> */}
+			<section>
+				<h2>Delivery Time</h2>
+				<button
+					onClick={() => filterByDeliveryTime(0, 10, '0-10')}
+					className={`${styles.delivery_time_btn} ${activeTimeRangeLabel === '0-10' ? styles.active : ''}`}>
+					0-10
+				</button>
+				<button
+					onClick={() => filterByDeliveryTime(11, 30, '10-30')}
+					className={`${styles.delivery_time_btn} ${activeTimeRangeLabel === '10-30' ? styles.active : ''}`}>
+					10-30
+				</button>
+				<button
+					onClick={() => filterByDeliveryTime(31, 60, '30-60')}
+					className={`${styles.delivery_time_btn} ${activeTimeRangeLabel === '30-60' ? styles.active : ''}`}>
+					30-60
+				</button>
+				<button
+					onClick={() => filterByDeliveryTime(61, Infinity, '1 hour+')}
+					className={`${styles.delivery_time_btn} ${activeTimeRangeLabel === '1 hour+' ? styles.active : ''}`}>
+					1 hour+
+				</button>
 			</section>
 			<div className={styles.btn_container}>
 				{filters.map((filter: Filter) => {

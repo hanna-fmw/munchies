@@ -22,6 +22,10 @@
 	background-color: rgb(216, 193, 232);
 }
 
+.active {
+	background-color: aquamarine;
+}
+
 .delivery_time_btn {
 	color: rgb(142, 133, 142);
 	border: 1px solid rgb(126, 122, 126);
