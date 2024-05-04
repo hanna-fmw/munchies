@@ -21,3 +21,10 @@
 .active_filter {
 	background-color: rgb(216, 193, 232);
 }
+
+.delivery_time_btn {
+	color: rgb(142, 133, 142);
+	border: 1px solid rgb(126, 122, 126);
+	padding: 4px 6px;
+	cursor: pointer;
+}
