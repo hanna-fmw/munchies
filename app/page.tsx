@@ -118,18 +118,23 @@ export default function Home() {
 			</section>
 			<section className={styles.filterContainer}>
 				{filters.map((filter: Filter) => (
-					<article
-						key={filter.id}
-						onClick={() => toggleFilter(filter.id)}
-						className={`${styles.categoryCard} ${activeFilters.includes(filter.id) ? styles.activeFilter : ''}`}>
-						<div>{filter.name}</div>
-						<Image
-									src={`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/${filter.image_url}`}
-									width={50}
-									height={50}
-									alt={filter.name}
-								/>
-					</article>
+					<CategoryCard key={filter.id} 
+					onClick={() => toggleFilter(filter.id)}
+					isActive={activeFilters.includes(filter.id)}
+					filter={filter}					
+					 />
+					// <article
+					// 	key={filter.id}
+					// 	onClick={() => toggleFilter(filter.id)}
+					// 	className={`${styles.categoryCard} ${activeFilters.includes(filter.id) ? styles.activeFilter : ''}`}>
+					// 	<div>{filter.name}</div>
+					// 	<Image
+					// 				src={`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/${filter.image_url}`}
+					// 				width={50}
+					// 				height={50}
+					// 				alt={filter.name}
+					// 			/>
+					// </article>
 				))}
 			</section>
 			{filteredRestaurants.length > 0 ? (
