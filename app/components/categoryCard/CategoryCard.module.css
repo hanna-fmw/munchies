@@ -1,0 +1,9 @@
+.categoryCard {
+	width: 10rem; /*160px*/
+	height: 5rem; /*80px*/
+	gap: 0px;
+	border-radius: 8px;
+	border: var(--border-1);
+	box-shadow: var(--shadow-1);
+	background-color: var(--color-white);
+}

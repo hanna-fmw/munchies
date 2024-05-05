@@ -59,17 +59,16 @@
 
 /*Shadows*/
 :root {
-	--shadow-1:	box-shadow: -4px 2px 10px 0px rgba(0, 0, 0, 0.01);
-	--shadow-2:	box-shadow: -16px 9px 18px 0px rgba(0, 0, 0, 0.01);
-	--shadow-3:	box-shadow: -35px 20px 24px 0px rgba(0, 0, 0, 0);
-	--shadow-4:	box-shadow: -63px 36px 29px 0px rgba(0, 0, 0, 0);
-	--shadow-5:	box-shadow: -98px 56px 32px 0px rgba(0, 0, 0, 0);
-
+	--shadow-1: -4px 2px 10px 0px rgba(0, 0, 0, 0.01);
+	--shadow-2: -16px 9px 18px 0px rgba(0, 0, 0, 0.01);
+	--shadow-3: -35px 20px 24px 0px rgba(0, 0, 0, 0);
+	--shadow-4: -63px 36px 29px 0px rgba(0, 0, 0, 0);
+	--shadow-5: -98px 56px 32px 0px rgba(0, 0, 0, 0);
 }
 
 /*Borders*/
 :root {
-	--border-1: border: 0.6px solid rgba(0, 0, 0, 0.1);
+	--border-1: 0.6px solid rgba(0, 0, 0, 0.1);
 }
 
 *,
@@ -93,20 +92,19 @@ body {
 	height: 100vh;
 	display: flex;
 	flex-direction: column;
-	position: relative;	
+	position: relative;
 }
 
 main {
 	width: 100%;
 }
 
-
 /*Large Heading Web*/
 .display {
 	font-size: var(--font-size-display);
 	line-height: var(--font-line-height-display);
 	letter-spacing: var(--font-letter-spacing-display);
-	font-weight: var(--font-weight-display);	
+	font-weight: var(--font-weight-display);
 }
 
 /*Heading Web*/
@@ -135,7 +133,6 @@ h2 {
 	line-height: var(--font-line-height-title);
 	letter-spacing: var(--font-letter-spacing-title);
 	font-weight: var(--font-weght-title);
-	
 }
 
 .subtitle {

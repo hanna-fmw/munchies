@@ -2,6 +2,8 @@
 import styles from './home.module.css'
 import Modal from './components/modal/Modal'
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
+import CategoryCard from './components/categoryCard/CategoryCard'
 
 type Restaurant = {
 	id: string
@@ -104,7 +106,7 @@ export default function Home() {
 					<button
 						key={index}
 						onClick={() => filterByDeliveryTime(index * 10 + 1, (index + 1) * 10, index)}
-						className={`${styles.delivery_time_btn} ${activeTimeRange === index ? styles.active : ''}`}>
+						className={`${styles.deliveryTimeBtn} ${activeTimeRange === index ? styles.active : ''}`}>
 						{range}
 					</button>
 				))}
@@ -114,14 +116,20 @@ export default function Home() {
 					))}
 				</div>
 			</section>
-			<section className={styles.btn_container}>
+			<section className={styles.filterContainer}>
 				{filters.map((filter: Filter) => (
-					<button
+					<article
 						key={filter.id}
-						className={`${styles.btn} ${activeFilters.includes(filter.id) ? styles.active_filter : ''}`}
-						onClick={() => toggleFilter(filter.id)}>
-						{filter.name}
-					</button>
+						onClick={() => toggleFilter(filter.id)}
+						className={`${styles.categoryCard} ${activeFilters.includes(filter.id) ? styles.activeFilter : ''}`}>
+						<div>{filter.name}</div>
+						<Image
+									src={`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/${filter.image_url}`}
+									width={50}
+									height={50}
+									alt={filter.name}
+								/>
+					</article>
 				))}
 			</section>
 			{filteredRestaurants.length > 0 ? (

@@ -1,25 +1,29 @@
-.delivery_time_btn.active {
+.categoryCard {
+	width: 10rem; /*160px*/
+	height: 5rem; /*80px*/
+	border-radius: 8px;
+	border: var(--border-1);
+	box-shadow: var(--shadow-1);
+	background-color: var(--color-white);
+	cursor: pointer;
+	display: flex;
+	justify-content: space-between;
+}
+
+.deliveryTimeBtn.active {
 	background-color: #4caf50;
 	color: var(--color-white);
 }
 
-.btn_container {
+.filterContainer {
 	width: 100vw;
 	display: flex;
-	justify-content: center;
-	gap: 2rem;
-	padding-block: 3rem;
+	flex-wrap: wrap;
+	gap: 1rem;
 }
 
-.btn {
-	color: purple;
-	border: 1px solid purple;
-	padding: 4px 6px;
-	cursor: pointer;
-}
-
-.active_filter {
-	background-color: rgb(216, 193, 232);
+.activeFilter {
+	background-color: rgb(217, 215, 218);
 }
 
 .active {
