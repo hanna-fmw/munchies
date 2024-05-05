@@ -1,10 +1,6 @@
 .main {
-	width: 100vw;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: center;
-	gap: 2rem;
+	width: 90vw;
+	margin: 0 auto;
 }
 
 .logo {
@@ -21,7 +17,11 @@
 	color: #9c9c9c;
 }
 
-.timeRangeContainer {
+.deliveryTimeContainer {
+	padding-block: var(--spacing-large);
+}
+
+.timeRangeCards {
 	display: flex;
 	gap: 1rem;
 }
@@ -37,6 +37,7 @@
 	gap: 1rem;
 	margin: 0 auto;
 	width: 90vw;
+	padding-block: var(--spacing-large);
 }
 
 .activeFilter {
@@ -47,10 +48,3 @@
 	background-color: #007bff; /* Example color */
 	color: var(--color-white);
 }
-
-/* .delivery_time_btn {
-	color: rgb(142, 133, 142);
-	border: 1px solid rgb(126, 122, 126);
-	padding: 4px 6px;
-	cursor: pointer;
-} */

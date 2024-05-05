@@ -1,10 +1,39 @@
 .restaurantCard {
-	width: 20.4rem; /*327px*/
-	height: 12.6rem; /*202px*/
+	height: 35vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: space-between;
 	padding: 1rem;
 	border-radius: 8px;
 	border: var(--border-1);
+	box-shadow: var(--shadow-1);
+	background-color: var(--color-white);
+	position: relative;
+}
+
+.restaurantIcon {
+	position: absolute;
+	top: 0;
+	right: 1rem;
+}
+
+.restaurantArrow {
+	object-fit: contain;
+}
+
+.leftSide,
+.rightSide {
+	display: flex;
 	justify-content: space-between;
+	align-items: baseline;
+	padding-right: 1rem;
+}
+
+.deliveryTimeBtn {
+	padding: 8px 12px 8px 12px;
+	border-radius: 8px;
+	border: var(--border-1);
 	box-shadow: var(--shadow-1);
 	background-color: var(--color-white);
 }

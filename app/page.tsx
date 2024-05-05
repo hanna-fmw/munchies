@@ -115,9 +115,9 @@ export default function Home() {
 		<main className={styles.main}>
 			{isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
 			<Image src={logoDark} className={styles.logo} alt='Logotype' />
-			<section>
+			<section className={styles.deliveryTimeContainer}>
 				<h2 className={styles.subtitle}>Delivery Time</h2>
-				<div className={styles.timeRangeContainer}>
+				<div className={styles.timeRangeCards}>
 					{timeRanges.map((range, index) => (
 						<DeliveryTimeBtn
 							key={index}
@@ -139,20 +139,25 @@ export default function Home() {
 					<CategoryCard key={filter.id} onClick={() => toggleFilter(filter.id)} isActive={activeFilters.includes(filter.id)} filter={filter} />
 				))}
 			</section>
-			<section>
+			<section className={styles.restaurantsContainer}>
 				<h1>Restaurants</h1>
-				<div className={styles.restaurantsContainer}>
+				<div className={styles.restaurantCards}>
 					{filteredRestaurants.length > 0 ? (
 						<article>
 							{filteredRestaurants.map((filteredRestaurant, i) => (
-								<div key={i}>{filteredRestaurant.name}</div>
+								/*<div key={i}>{filteredRestaurant.name}</div> */
+								<RestaurantCard key={i} restaurant={filteredRestaurant}>
+									{filteredRestaurant.name}
+								</RestaurantCard>
 							))}
 						</article>
 					) : (
 						<article>
 							{restaurants.map((restaurant, i) => (
-								// <div key={i}>{restaurant.name}</div>
-								<RestaurantCard key={i} restaurant={restaurant} />
+								/*<RestaurantCard key={i} restaurant={restaurant} />*/
+								<RestaurantCard key={i} restaurant={restaurant}>
+									{restaurant.name}
+								</RestaurantCard>
 							))}
 						</article>
 					)}
