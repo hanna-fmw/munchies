@@ -16,12 +16,12 @@ type Filter = {
 
 const CategoryCard = ({ filter, onClick, isActive }: CategoryCardProps) => {
 	return (
-		<article onClick={onClick} className={`${styles.categoryCard} ${isActive ? styles.activeFilter : ''}`}>
+		<article onClick={onClick} className={`${styles.categoryCard} ${isActive ? styles.active : ''}`}>
 			<p className={styles.categoryName}>{filter.name}</p>
 			<Image
 				src={`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/${filter.image_url}`}
-				width={30}
-				height={30}
+				width={45}
+				height={45}
 				alt={filter.name}
 				style={{ objectFit: 'cover' }}
 			/>

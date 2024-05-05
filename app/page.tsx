@@ -112,38 +112,38 @@ export default function Home() {
 	}, [isModalOpen])
 
 	return (
-		<main className={styles.main}>
+		<>
 			{isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
-			<Image src={logoDark} className={styles.logo} alt='Logotype' />
-			<section className={styles.deliveryTimeContainer}>
-				<h2 className={styles.subtitle}>Delivery Time</h2>
-				<div className={styles.timeRangeCards}>
-					{timeRanges.map((range, index) => (
-						<DeliveryTimeBtn
-							key={index}
-							onClick={() => filterByDeliveryTime(range.minTime, range.maxTime, index)}
-							isActive={activeTimeRange === index}
-							range={range}
-						/>
-					))}
-				</div>
+			<main className={styles.main}>
+				<Image src={logoDark} className={styles.logo} alt='Logotype' />
+				<section className={styles.deliveryTimeContainer}>
+					<h2 className={styles.subtitle}>Delivery Time</h2>
+					<div className={styles.timeRangeCards}>
+						{timeRanges.map((range, index) => (
+							<DeliveryTimeBtn
+								key={index}
+								onClick={() => filterByDeliveryTime(range.minTime, range.maxTime, index)}
+								isActive={activeTimeRange === index}
+								range={range}
+							/>
+						))}
+					</div>
 
-				<div>
-					{deliveryRange.map((restaurant, i) => (
-						<div key={i}>{restaurant}</div>
+					<div>
+						{deliveryRange.map((restaurant, i) => (
+							<div key={i}>{restaurant}</div>
+						))}
+					</div>
+				</section>
+				<section className={styles.filterCardContainer}>
+					{filters.map((filter: Filter) => (
+						<CategoryCard key={filter.id} onClick={() => toggleFilter(filter.id)} isActive={activeFilters.includes(filter.id)} filter={filter} />
 					))}
-				</div>
-			</section>
-			<section className={styles.filterContainer}>
-				{filters.map((filter: Filter) => (
-					<CategoryCard key={filter.id} onClick={() => toggleFilter(filter.id)} isActive={activeFilters.includes(filter.id)} filter={filter} />
-				))}
-			</section>
-			<section className={styles.restaurantsContainer}>
-				<h1>Restaurants</h1>
-				<div className={styles.restaurantCards}>
+				</section>
+				<section>
+					<h1>Restaurants</h1>
 					{filteredRestaurants.length > 0 ? (
-						<article>
+						<article className={styles.restaurantCardContainer}>
 							{filteredRestaurants.map((filteredRestaurant, i) => (
 								/*<div key={i}>{filteredRestaurant.name}</div> */
 								<RestaurantCard key={i} restaurant={filteredRestaurant}>
@@ -152,7 +152,7 @@ export default function Home() {
 							))}
 						</article>
 					) : (
-						<article>
+						<article className={styles.restaurantCardContainer}>
 							{restaurants.map((restaurant, i) => (
 								/*<RestaurantCard key={i} restaurant={restaurant} />*/
 								<RestaurantCard key={i} restaurant={restaurant}>
@@ -161,8 +161,8 @@ export default function Home() {
 							))}
 						</article>
 					)}
-				</div>
-			</section>
-		</main>
+				</section>
+			</main>
+		</>
 	)
 }

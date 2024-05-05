@@ -1,5 +1,5 @@
 .restaurantCard {
-	height: 35vh;
+	height: 20vh;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -10,23 +10,14 @@
 	box-shadow: var(--shadow-1);
 	background-color: var(--color-white);
 	position: relative;
-}
-
-.restaurantIcon {
-	position: absolute;
-	top: 0;
-	right: 1rem;
-}
-
-.restaurantArrow {
-	object-fit: contain;
+	margin-bottom: 0.5rem;
 }
 
 .leftSide,
 .rightSide {
 	display: flex;
 	justify-content: space-between;
-	align-items: baseline;
+	align-items: center;
 	padding-right: 1rem;
 }
 
