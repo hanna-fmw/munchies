@@ -4,7 +4,7 @@
 	flex-direction: column;
 	justify-content: space-between;
 	align-items: space-between;
-	padding: 1rem;
+	padding: 0.8rem;
 	border-radius: 8px;
 	border: var(--border-1);
 	box-shadow: var(--shadow-1);

@@ -7,6 +7,8 @@ import CategoryCard from './components/categoryCard/CategoryCard'
 import DeliveryTimeBtn from './components/deliveryTimeBtn/DeliveryTimeBtn'
 import logoDark from '@/public/logo-dark.png'
 import RestaurantCard from './components/restaurantCard/RestaurantCard'
+import SidePanel from './components/sidePanel/SidePanel'
+import PriceRange from './components/priceRange/PriceRange'
 
 type Restaurant = {
 	id: string
@@ -38,6 +40,8 @@ export default function Home() {
 		{ minTime: 31, maxTime: 60, label: '30-60 min' },
 		{ minTime: 61, maxTime: Infinity, label: '1 hour+' },
 	]
+
+	const priceRanges = ['$', '$$', '$$$', '$$$$']
 
 	useEffect(() => {
 		setActiveFilters([])
@@ -116,51 +120,79 @@ export default function Home() {
 			{isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
 			<main className={styles.main}>
 				<Image src={logoDark} className={styles.logo} alt='Logotype' />
-				<section className={styles.deliveryTimeContainer}>
-					<h2 className={styles.subtitle}>Delivery Time</h2>
-					<div className={styles.timeRangeCards}>
-						{timeRanges.map((range, index) => (
-							<DeliveryTimeBtn
-								key={index}
-								onClick={() => filterByDeliveryTime(range.minTime, range.maxTime, index)}
-								isActive={activeTimeRange === index}
-								range={range}
-							/>
-						))}
-					</div>
+				<section className={styles.layoutGrid}>
+					<aside className={styles.sidePanel}>
+						<section className={styles.foodCategory}>
+							<h1>Filter</h1>
+							<h2 className={styles.subtitle}>Food Category</h2>
 
-					<div>
-						{deliveryRange.map((restaurant, i) => (
-							<div key={i}>{restaurant}</div>
+							<section className={`${styles.filterCardContainer} ${styles.filterCardContainerSidePanel}`}>
+								{filters.map((filter: Filter) => (
+									<article
+										key={filter.id}
+										onClick={() => toggleFilter(filter.id)}
+										className={`${styles.categoryCard} ${activeFilters.includes(filter.id) ? styles.active : ''}`}>
+										<p className={styles.categoryName}>{filter.name}</p>
+									</article>
+								))}
+							</section>
+						</section>
+
+						<section className={styles.deliveryTimeContainer}>
+							<h2 className={styles.subtitle}>Delivery Time</h2>
+							<div className={styles.timeRangeCards}>
+								{timeRanges.map((timeRange, index) => (
+									<DeliveryTimeBtn
+										key={index}
+										onClick={() => filterByDeliveryTime(timeRange.minTime, timeRange.maxTime, index)}
+										isActive={activeTimeRange === index}
+										timeRange={timeRange}
+									/>
+								))}
+							</div>
+						</section>
+						<section className={styles.priceRangeContainer}>
+							<h2 className={styles.subtitle}>Price Range</h2>
+							<div className={styles.priceRangeCards}>
+								{priceRanges.map((priceRange, i) => (
+									<PriceRange priceRange={priceRange} key={i} />
+								))}
+							</div>
+
+							{/* <div>
+							{deliveryRange.map((restaurant, i) => (
+								<div key={i}>{restaurant}</div>
+							))}
+						</div> */}
+						</section>
+					</aside>
+					<section className={styles.filterCardContainer}>
+						{filters.map((filter: Filter) => (
+							<CategoryCard key={filter.id} onClick={() => toggleFilter(filter.id)} isActive={activeFilters.includes(filter.id)} filter={filter} />
 						))}
-					</div>
-				</section>
-				<section className={styles.filterCardContainer}>
-					{filters.map((filter: Filter) => (
-						<CategoryCard key={filter.id} onClick={() => toggleFilter(filter.id)} isActive={activeFilters.includes(filter.id)} filter={filter} />
-					))}
-				</section>
-				<section>
-					<h1>Restaurants</h1>
-					{filteredRestaurants.length > 0 ? (
-						<article className={styles.restaurantCardContainer}>
-							{filteredRestaurants.map((filteredRestaurant, i) => (
-								/*<div key={i}>{filteredRestaurant.name}</div> */
-								<RestaurantCard key={i} restaurant={filteredRestaurant}>
-									{filteredRestaurant.name}
-								</RestaurantCard>
-							))}
-						</article>
-					) : (
-						<article className={styles.restaurantCardContainer}>
-							{restaurants.map((restaurant, i) => (
-								/*<RestaurantCard key={i} restaurant={restaurant} />*/
-								<RestaurantCard key={i} restaurant={restaurant}>
-									{restaurant.name}
-								</RestaurantCard>
-							))}
-						</article>
-					)}
+					</section>
+					<section>
+						<h1>Restaurants</h1>
+						{filteredRestaurants.length > 0 ? (
+							<article className={styles.restaurantCardContainer}>
+								{filteredRestaurants.map((filteredRestaurant, i) => (
+									/*<div key={i}>{filteredRestaurant.name}</div> */
+									<RestaurantCard key={i} restaurant={filteredRestaurant}>
+										{filteredRestaurant.name}
+									</RestaurantCard>
+								))}
+							</article>
+						) : (
+							<article className={styles.restaurantCardContainer}>
+								{restaurants.map((restaurant, i) => (
+									/*<RestaurantCard key={i} restaurant={restaurant} />*/
+									<RestaurantCard key={i} restaurant={restaurant}>
+										{restaurant.name}
+									</RestaurantCard>
+								))}
+							</article>
+						)}
+					</section>
 				</section>
 			</main>
 		</>

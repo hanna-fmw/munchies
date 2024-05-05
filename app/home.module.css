@@ -3,6 +3,10 @@
 	margin: 0 auto;
 }
 
+.sidePanel {
+	display: none;
+}
+
 .logo {
 	align-self: flex-start;
 	padding-top: 4rem;
@@ -44,19 +48,13 @@
 
 @media (min-width: 550px) {
 	.filterCardContainer {
+		width: 100%;
 		grid-template-columns: repeat(4, 1fr);
 	}
-}
 
-@media (min-width: 550px) {
 	.restaurantCardContainer {
+		width: 100%;
 		grid-template-columns: repeat(2, 1fr);
-	}
-}
-
-@media (min-width: 768px) {
-	.filterCardContainer {
-		grid-template-columns: repeat(7, 1fr);
 	}
 }
 
@@ -67,6 +65,73 @@
 }
 
 @media (min-width: 1024px) {
+	.filterCardContainer.filterCardContainerSidePanel {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.categoryName {
+		font-family: var(--font-family-primary);
+	}
+
+	.active {
+		/* border: 2px solid var(--color-green); */
+		text-decoration: underline;
+		text-underline-offset: 6px;
+		text-decoration-color: var(--color-green);
+	}
+
+	.restaurantCardContainer {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	.layoutGrid {
+		width: 100%;
+		margin: 0 auto;
+		display: grid;
+		grid-template-columns: 20% 80%;
+		/* grid-template-rows: 1fr, 2fr; */
+		column-gap: 1rem;
+	}
+
+	.sidePanel {
+		width: 100%;
+		padding: 2rem 1rem;
+		display: block;
+		grid-column: 1/1;
+		grid-row: 1/3;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.foodCategory {
+		grid-column: 1;
+		grid-row: 1/2;
+	}
+
+	.deliveryTimeContainer {
+		grid-column: 1;
+		grid-row: 2/3;
+	}
+
+	.priceRangeContainer {
+		grid-column: 1;
+		grid-row: 3/4;
+	}
+
+	.timeRangeCards {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (min-width: 1024px) {
+	/*Two classes to distinguish styles for
+	category cards in top menu and side panel*/
+	.filterCardContainer {
+		grid-template-columns: repeat(7, 1fr);
+	}
+
 	.restaurantCardContainer {
 		grid-template-columns: repeat(4, 1fr);
 	}

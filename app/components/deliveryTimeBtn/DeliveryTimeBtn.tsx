@@ -2,21 +2,21 @@ import React from 'react'
 import styles from './DeliveryTimeBtn.module.css'
 
 type DeliveryTimeBtnProps = {
-	range: Range
+	timeRange: TimeRange
 	isActive: boolean
 	onClick: () => void
 }
 
-type Range = {
+type TimeRange = {
 	minTime: number
 	maxTime: number
 	label: string
 }
 
-const DeliveryTimeBtn = ({ onClick, isActive, range }: DeliveryTimeBtnProps) => {
+const DeliveryTimeBtn = ({ onClick, isActive, timeRange }: DeliveryTimeBtnProps) => {
 	return (
 		<button onClick={onClick} className={`${styles.deliveryTimeBtn} ${isActive ? styles.active : ''}`}>
-			{range.label}
+			{timeRange.label}
 		</button>
 	)
 }
