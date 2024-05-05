@@ -2,37 +2,164 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Typography */
 :root {
-	--bg-green: #00703a;
-	--bg-light-grey: #f9f9f9;
-	--heading-h1: 48px;
+	--font-family-primary: 'SF Pro', sans-serif;
+
+	--font-size-cover: 3rem; /* 48px */
+	--font-line-height-cover: 125%;
+	--font-letter-spacing-cover: -1px;
+	--font-weight-cover: 760;
+
+	--font-size-display: 2.5rem; /* 40px */
+	--font-line-height-display: 125%;
+	--font-letter-spacing-display: -1px;
+	--font-weight-display: 400;
+
+	--font-size-h1: 1.5rem; /* 24px */
+	--font-line-height-h1: 125%;
+	--font-letter-spacing-h1: -0.5px;
+	--font-weight-h1: 400;
+
+	--font-size-h2: 1.25rem; /* 20px */
+	--font-line-height-h2: 125%;
+	--font-letter-spacing-h2: -0.5px;
+	--font-weight-h2: 400;
+
+	--font-size-title: 0.875rem; /* 14px */
+	--font-line-height-title: 125%;
+	--font-letter-spacing-title: -0.5px;
+	--font-weight-title: 400;
+
+	--font-size-subtitle: 0.75rem; /* 12px */
+	--font-line-height-subtitle: 125%;
+	--font-letter-spacing-subtitle: -0.5px;
+	--font-weight-subtitle: 400;
+
+	--font-size-body: 0.75rem; /* 12px */
+	--font-line-height-body: 125%;
+	--font-letter-spacing-body: -0.5px;
+	--font-weight-body: 400;
 }
 
-html,
-body {
-	margin: 0;
+/* Spacing */
+:root {
+	--spacing-small: 0.5rem; /* 8px */
+	--spacing-medium: 1rem; /* 16px */
+	--spacing-large: 1.5rem; /* 24px */
+}
+
+/* Colors */
+:root {
+	--color-green: #00703a;
+	--color-off-white: #fafafa;
+	--color-black: #000;
+	--color-white: #fff;
+}
+
+/*Shadows*/
+:root {
+	--shadow-1:	box-shadow: -4px 2px 10px 0px rgba(0, 0, 0, 0.01);
+	--shadow-2:	box-shadow: -16px 9px 18px 0px rgba(0, 0, 0, 0.01);
+	--shadow-3:	box-shadow: -35px 20px 24px 0px rgba(0, 0, 0, 0);
+	--shadow-4:	box-shadow: -63px 36px 29px 0px rgba(0, 0, 0, 0);
+	--shadow-5:	box-shadow: -98px 56px 32px 0px rgba(0, 0, 0, 0);
+
+}
+
+/*Borders*/
+:root {
+	--border-1: border: 0.6px solid rgba(0, 0, 0, 0.1);
+}
+
+*,
+*::before,
+*::after {
 	box-sizing: border-box;
+	margin: 0;
 	padding: 0;
 }
 
 body {
-	color: rgb(var(--foreground-rgb));
-	background: var(--bg-light-grey);
+	background: var(--color-off-white);
+	font-family: var(--font-family-primary);
+	font-size: var(--font-size-body);
+	line-height: var(--font-line-height-body);
+	letter-spacing: var(--font-letter-spacing-body);
+	font-weight: var(--font-weight-body);
 	width: 100vw;
+	min-width: 100%;
+	overflow-x: hidden;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	position: relative;	
 }
 
+main {
+	width: 100%;
+}
+
+
+/*Large Heading Web*/
+.display {
+	font-size: var(--font-size-display);
+	line-height: var(--font-line-height-display);
+	letter-spacing: var(--font-letter-spacing-display);
+	font-weight: var(--font-weight-display);	
+}
+
+/*Heading Web*/
 h1 {
-	font-size: var(--heading-h1);
-	color: #fff;
-	font-weight: 760;
-	font-family: 'SF Pro', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-	line-height: 3rem;
-	margin-bottom: 1rem;
-	letter-spacing: -1px;
+	font-family: var(--font-family-primary);
+	font-size: var(--font-size-h1);
+	line-height: var(--font-line-height-h1);
+	letter-spacing: var(--font-letter-spacing-h1);
+	font-weight: var(--font-weight-h1);
+	margin-bottom: var(--spacing-medium);
 }
 
-p {
-	color: #fff;
-	font-size: 0.875rem;
-	font-weight: 400;
+/*Heading Mobile*/
+h2 {
+	font-family: var(--font-family-primary);
+	font-size: var(--font-size-h2);
+	line-height: var(--font-line-height-h2);
+	letter-spacing: var(--font-letter-spacing-h2);
+	font-weight: var(--font-weight-h2);
+	margin-bottom: var(--spacing-medium);
+}
+
+.title {
+	font-family: var(--font-family-primary);
+	font-size: var(--font-size-title);
+	line-height: var(--font-line-height-title);
+	letter-spacing: var(--font-letter-spacing-title);
+	font-weight: var(--font-weght-title);
+	
+}
+
+.subtitle {
+	font-size: var(--font-size-subtitle);
+	line-height: var(--font-line-height-subtitle);
+	letter-spacing: var(--font-letter-spacing-subtitle);
+	font-weight: var(--font-weight-subtitle);
+	text-transform: uppercase;
+}
+
+span {
+	font-family: var(--font-family-primary);
+	font-size: var(--font-size-span);
+	line-height: var(--font-line-height-span);
+	letter-spacing: var(--font-letter-spacing-span);
+	font-weight: var(--font-weight-span);
+	margin-bottom: var(--spacing-small);
+}
+
+ul {
+	all: unset;
+	list-style-type: none;
+}
+
+button {
+	font-family: var(--font-family-primary);
 }

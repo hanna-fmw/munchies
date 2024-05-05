@@ -1,14 +1,24 @@
-.modal {
+/*Green Landing Page Mobile*/
+
+.modalOverlay {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	background-color: var(--color-green);
 	position: absolute;
 	top: 0;
 	left: 0;
-	background-color: var(--bg-green);
-	width: 100vw;
-	height: 100vh;
+	z-index: 50;
+}
+
+.modalContent {
+	height: 100%;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	padding: 2.5rem 1.5rem;
+	padding: 1rem;
 }
 
 .logotype {
@@ -18,14 +28,29 @@
 
 .button {
 	margin: 0 auto;
+	font-size: 1rem;
+	font-weight: 700;
+	line-height: 1rem;
+	letter-spacing: -0.5px;
+	text-align: center;
 }
 
-.onlyMobile {
-	display: block;
+.cover {
+	font-family: var(--font-family-primary);
+	color: var(--color-white);
+	font-size: var(--font-size-cover);
+	line-height: var(--font-line-height-cover);
+	letter-spacing: var(--font-letter-spacing-cover);
+	font-weight: var(--font-weight-cover);
+	margin-bottom: var(--spacing-medium);
+}
+
+.p {
+	color: #fff;
 }
 
 @media (min-width: 376px) {
-	.onlyMobile {
+	.modalOverlay {
 		display: none;
 	}
 }

@@ -1,6 +1,6 @@
 .delivery_time_btn.active {
-	background-color: #4caf50; /* Example: Green background for active state */
-	color: white;
+	background-color: #4caf50;
+	color: var(--color-white);
 }
 
 .btn_container {
@@ -18,18 +18,13 @@
 	cursor: pointer;
 }
 
-.main {
-	display: flex;
-	flex-direction: column;
-}
-
 .active_filter {
 	background-color: rgb(216, 193, 232);
 }
 
 .active {
 	background-color: #007bff; /* Example color */
-	color: white;
+	color: var(--color-white);
 }
 
 .delivery_time_btn {

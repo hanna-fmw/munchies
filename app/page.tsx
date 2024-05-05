@@ -28,6 +28,8 @@ export default function Home() {
 	const [activeTimeRange, setActiveTimeRange] = useState<number | null>(null) // State to track the active time range button
 
 	useEffect(() => {
+		setActiveFilters([])
+		setActiveTimeRange(null)
 		getAllRestaurants()
 		getAllFilters()
 	}, [])
@@ -83,9 +85,19 @@ export default function Home() {
 		console.log('Updated deliveryRange', restaurantsFilteredByTimeRange)
 	}
 
+	useEffect(() => {
+		document.body.style.overflowY = isModalOpen ? 'hidden' : 'auto'
+
+		return () => {
+			document.body.style.overflowY = 'auto'
+			document.documentElement.style.overflowY = 'auto'
+		}
+	}, [isModalOpen])
+
 	return (
-		<main className={`${styles.main} ${styles.onlyMobile}`}>
+		<main>
 			{isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
+
 			<section>
 				<h2>Delivery Time</h2>
 				{['0-10', '10-30', '30-60', '1 hour+'].map((range, index) => (
@@ -102,7 +114,7 @@ export default function Home() {
 					))}
 				</div>
 			</section>
-			<div className={styles.btn_container}>
+			<section className={styles.btn_container}>
 				{filters.map((filter: Filter) => (
 					<button
 						key={filter.id}
@@ -111,19 +123,19 @@ export default function Home() {
 						{filter.name}
 					</button>
 				))}
-			</div>
+			</section>
 			{filteredRestaurants.length > 0 ? (
-				<div>
+				<article>
 					{filteredRestaurants.map((filteredRestaurant, i) => (
 						<div key={i}>{filteredRestaurant.name}</div>
 					))}
-				</div>
+				</article>
 			) : (
-				<div>
+				<article>
 					{restaurants.map((restaurant, i) => (
 						<div key={i}>{restaurant.name}</div>
 					))}
-				</div>
+				</article>
 			)}
 		</main>
 	)
