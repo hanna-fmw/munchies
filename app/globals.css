@@ -55,6 +55,7 @@
 	--color-off-white: #fafafa;
 	--color-black: #000;
 	--color-white: #fff;
+	--color-subtitle: #9c9c9c;
 }
 
 /*Shadows*/
@@ -79,6 +80,7 @@
 	padding: 0;
 }
 
+html,
 body {
 	background: var(--color-off-white);
 	font-family: var(--font-family-primary);
@@ -95,16 +97,16 @@ body {
 	position: relative;
 }
 
-main {
-	width: 100%;
-}
-
 /*Large Heading Web*/
 .display {
 	font-size: var(--font-size-display);
 	line-height: var(--font-line-height-display);
 	letter-spacing: var(--font-letter-spacing-display);
 	font-weight: var(--font-weight-display);
+}
+
+main {
+	width: 100vw;
 }
 
 /*Heading Web*/
@@ -141,6 +143,7 @@ h2 {
 	letter-spacing: var(--font-letter-spacing-subtitle);
 	font-weight: var(--font-weight-subtitle);
 	text-transform: uppercase;
+	color: var(--color-subtitle);
 }
 
 span {

@@ -1,13 +1,29 @@
-.categoryCard {
-	width: 10rem; /*160px*/
-	height: 5rem; /*80px*/
-	border-radius: 8px;
-	border: var(--border-1);
-	box-shadow: var(--shadow-1);
-	background-color: var(--color-white);
-	cursor: pointer;
+.main {
+	width: 100vw;
 	display: flex;
+	flex-direction: column;
 	justify-content: space-between;
+	align-items: center;
+	gap: 2rem;
+}
+
+.logo {
+	align-self: flex-start;
+	padding-top: 3rem;
+}
+
+.subtitle {
+	font-size: var(--font-size-subtitle);
+	line-height: var(--font-line-height-subtitle);
+	letter-spacing: var(--font-letter-spacing-subtitle);
+	font-weight: var(--font-weight-subtitle);
+	text-transform: uppercase;
+	color: #9c9c9c;
+}
+
+.timeRangeContainer {
+	display: flex;
+	gap: 1rem;
 }
 
 .deliveryTimeBtn.active {
@@ -16,10 +32,11 @@
 }
 
 .filterContainer {
-	width: 100vw;
-	display: flex;
-	flex-wrap: wrap;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
 	gap: 1rem;
+	margin: 0 auto;
+	width: 90vw;
 }
 
 .activeFilter {
@@ -31,9 +48,9 @@
 	color: var(--color-white);
 }
 
-.delivery_time_btn {
+/* .delivery_time_btn {
 	color: rgb(142, 133, 142);
 	border: 1px solid rgb(126, 122, 126);
 	padding: 4px 6px;
 	cursor: pointer;
-}
+} */

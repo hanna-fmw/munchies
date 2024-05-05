@@ -1,9 +1,14 @@
 .categoryCard {
-	width: 10rem; /*160px*/
-	height: 5rem; /*80px*/
-	gap: 0px;
+	display: flex;
+	justify-content: space-between;
 	border-radius: 8px;
 	border: var(--border-1);
 	box-shadow: var(--shadow-1);
 	background-color: var(--color-white);
+	cursor: pointer;
+	padding: 0.2rem;
+}
+
+.categoryName {
+	font-family: var(--font-family-primary);
 }

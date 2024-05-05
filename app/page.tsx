@@ -4,6 +4,9 @@ import Modal from './components/modal/Modal'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import CategoryCard from './components/categoryCard/CategoryCard'
+import DeliveryTimeBtn from './components/deliveryTimeBtn/DeliveryTimeBtn'
+import logoDark from '@/public/logo-dark.png'
+import RestaurantCard from './components/restaurantCard/RestaurantCard'
 
 type Restaurant = {
 	id: string
@@ -28,6 +31,13 @@ export default function Home() {
 	const [filters, setFilters] = useState<any>([])
 	const [deliveryRange, setDeliveryRange] = useState<string[]>([])
 	const [activeTimeRange, setActiveTimeRange] = useState<number | null>(null) // State to track the active time range button
+
+	const timeRanges = [
+		{ minTime: 0, maxTime: 10, label: '0-10 min' },
+		{ minTime: 11, maxTime: 30, label: '10-30 min' },
+		{ minTime: 31, maxTime: 60, label: '30-60 min' },
+		{ minTime: 61, maxTime: Infinity, label: '1 hour+' },
+	]
 
 	useEffect(() => {
 		setActiveFilters([])
@@ -74,17 +84,22 @@ export default function Home() {
 		setFilteredRestaurants(uniqueFiltered)
 	}
 
-	const filterByDeliveryTime = (minTime: number, maxTime: number = Infinity, index: number) => {
-		const restaurantsFilteredByTimeRange = restaurants.reduce<string[]>((acc, restaurant) => {
-			if (restaurant.delivery_time_minutes > minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)) {
-				return [...acc, restaurant.name]
-			}
-			return acc
-		}, [])
+	const filterByDeliveryTime = (minTime: number, maxTime: number, index: number) => {
+		if (activeTimeRange === index) {
+			setActiveTimeRange(null)
+			setDeliveryRange([])
+		} else {
+			const restaurantsFilteredByTimeRange = restaurants.reduce<string[]>((acc, restaurant) => {
+				if (restaurant.delivery_time_minutes >= minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)) {
+					return [...acc, restaurant.name]
+				}
+				return acc
+			}, [])
 
-		setDeliveryRange(restaurantsFilteredByTimeRange)
-		setActiveTimeRange(index) // Update the active time range index
-		console.log('Updated deliveryRange', restaurantsFilteredByTimeRange)
+			setDeliveryRange(restaurantsFilteredByTimeRange)
+			setActiveTimeRange(index)
+			console.log('Updated deliveryRange', restaurantsFilteredByTimeRange)
+		}
 	}
 
 	useEffect(() => {
@@ -97,19 +112,22 @@ export default function Home() {
 	}, [isModalOpen])
 
 	return (
-		<main>
+		<main className={styles.main}>
 			{isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
-
+			<Image src={logoDark} className={styles.logo} alt='Logotype' />
 			<section>
-				<h2>Delivery Time</h2>
-				{['0-10', '10-30', '30-60', '1 hour+'].map((range, index) => (
-					<button
-						key={index}
-						onClick={() => filterByDeliveryTime(index * 10 + 1, (index + 1) * 10, index)}
-						className={`${styles.deliveryTimeBtn} ${activeTimeRange === index ? styles.active : ''}`}>
-						{range}
-					</button>
-				))}
+				<h2 className={styles.subtitle}>Delivery Time</h2>
+				<div className={styles.timeRangeContainer}>
+					{timeRanges.map((range, index) => (
+						<DeliveryTimeBtn
+							key={index}
+							onClick={() => filterByDeliveryTime(range.minTime, range.maxTime, index)}
+							isActive={activeTimeRange === index}
+							range={range}
+						/>
+					))}
+				</div>
+
 				<div>
 					{deliveryRange.map((restaurant, i) => (
 						<div key={i}>{restaurant}</div>
@@ -118,38 +136,28 @@ export default function Home() {
 			</section>
 			<section className={styles.filterContainer}>
 				{filters.map((filter: Filter) => (
-					<CategoryCard key={filter.id} 
-					onClick={() => toggleFilter(filter.id)}
-					isActive={activeFilters.includes(filter.id)}
-					filter={filter}					
-					 />
-					// <article
-					// 	key={filter.id}
-					// 	onClick={() => toggleFilter(filter.id)}
-					// 	className={`${styles.categoryCard} ${activeFilters.includes(filter.id) ? styles.activeFilter : ''}`}>
-					// 	<div>{filter.name}</div>
-					// 	<Image
-					// 				src={`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/${filter.image_url}`}
-					// 				width={50}
-					// 				height={50}
-					// 				alt={filter.name}
-					// 			/>
-					// </article>
+					<CategoryCard key={filter.id} onClick={() => toggleFilter(filter.id)} isActive={activeFilters.includes(filter.id)} filter={filter} />
 				))}
 			</section>
-			{filteredRestaurants.length > 0 ? (
-				<article>
-					{filteredRestaurants.map((filteredRestaurant, i) => (
-						<div key={i}>{filteredRestaurant.name}</div>
-					))}
-				</article>
-			) : (
-				<article>
-					{restaurants.map((restaurant, i) => (
-						<div key={i}>{restaurant.name}</div>
-					))}
-				</article>
-			)}
+			<section>
+				<h1>Restaurants</h1>
+				<div className={styles.restaurantsContainer}>
+					{filteredRestaurants.length > 0 ? (
+						<article>
+							{filteredRestaurants.map((filteredRestaurant, i) => (
+								<div key={i}>{filteredRestaurant.name}</div>
+							))}
+						</article>
+					) : (
+						<article>
+							{restaurants.map((restaurant, i) => (
+								// <div key={i}>{restaurant.name}</div>
+								<RestaurantCard key={i} restaurant={restaurant} />
+							))}
+						</article>
+					)}
+				</div>
+			</section>
 		</main>
 	)
 }

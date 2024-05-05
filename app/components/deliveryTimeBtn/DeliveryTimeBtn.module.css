@@ -1,0 +1,11 @@
+.deliveryTimeBtn {
+	padding: 8px 12px 8px 12px;
+	border-radius: 8px;
+	border: var(--border-1);
+	box-shadow: var(--shadow-1);
+	background-color: var(--color-white);
+}
+
+.active {
+	border: 2px solid var(--color-green);
+}
