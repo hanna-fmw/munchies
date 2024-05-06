@@ -8,6 +8,7 @@ import DeliveryTimeBtn from './components/deliveryTimeBtn/DeliveryTimeBtn'
 import logoDark from '@/public/logo-dark.png'
 import RestaurantCard from './components/restaurantCard/RestaurantCard'
 import PriceRange from './components/priceRange/PriceRange'
+import OpenHoursBadge from './components/openHoursBtn/OpenHoursBadge'
 
 type Restaurant = {
 	id: string
@@ -24,14 +25,24 @@ type Filter = {
 	image_url: string
 }
 
+type Hours = {
+	hours: {
+		restaurant_id: string
+		is_open: boolean
+	}
+}
+
 export default function Home() {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(true)
 	const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>([])
 	const [activeFilters, setActiveFilters] = useState<string[]>([])
+
 	const [restaurants, setRestaurants] = useState<Restaurant[]>([])
 	const [filters, setFilters] = useState<any>([])
 	const [deliveryTimeRange, setDeliveryTimeRange] = useState<string[]>([])
-	const [activeTimeRange, setActiveTimeRange] = useState<number | null>(null) // State to track the active time range button
+
+	const [activeTimeRange, setActiveTimeRange] = useState<number | null>(null)
+	const [openingHours, setOpeningHours] = useState<Hours[]>([])
 
 	const timeRanges = [
 		{ minTime: 0, maxTime: 10, label: '0-10 min' },
@@ -49,23 +60,36 @@ export default function Home() {
 		getAllFilters()
 	}, [])
 
+	useEffect(() => {
+		console.log('This is the openingHours state', openingHours)
+	}, [openingHours])
+
 	const getAllRestaurants = async () => {
 		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/restaurants')
 		const data = await res.json()
+		if (data.restaurants.length > 0) {
+			data.restaurants.forEach((restaurant: any) => {
+				getAllRestaurantsOpeningHours(restaurant.id)
+			})
+		}
 		setRestaurants(data.restaurants)
+	}
+
+	// Function to fetch opening hours and update the state
+	const getAllRestaurantsOpeningHours = async (restaurantId: string) => {
+		const res = await fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/open/${restaurantId}`)
+		const data = await res.json()
+
+		console.log('opening hours', data)
+		//We put each openingHoursData object (which consists of restaurant_id and is_open) in an array:
+		//@ts-ignore
+		setOpeningHours((prevHours) => [...prevHours, { hours: { restaurant_id: data.restaurant_id, is_open: data.is_open } }])
 	}
 
 	const getAllFilters = async () => {
 		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/filter')
 		const data = await res.json()
 		setFilters(data.filters)
-	}
-
-	const getOpeningHours = async () => {
-		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/open/af18f0b2-7227-4485-b706-664ef7d3525b')
-		// const res = await fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/open/${restaurantId}`)
-		const data = await res.json()
-		setFilters(data)
 	}
 
 	const toggleFilter = (filter: string) => {
@@ -217,18 +241,34 @@ export default function Home() {
 						{filteredRestaurants.length > 0 ? (
 							<article className={styles.restaurantCardContainer}>
 								{filteredRestaurants.map((filteredRestaurant, i) => (
-									/*<div key={i}>{filteredRestaurant.name}</div> */
 									<RestaurantCard key={i} restaurant={filteredRestaurant}>
-										{filteredRestaurant.name}
+										{(() => {
+											const foundItem = openingHours.find((item) => item.hours.restaurant_id === filteredRestaurant.id)
+											return foundItem ? (
+												<>
+													<OpenHoursBadge isOpen={foundItem.hours.is_open} label={foundItem.hours.is_open ? 'Open' : 'Closed'} />
+												</>
+											) : (
+												<p>{filteredRestaurant.name}</p>
+											)
+										})()}
 									</RestaurantCard>
 								))}
 							</article>
 						) : (
 							<article className={styles.restaurantCardContainer}>
 								{restaurants.map((restaurant, i) => (
-									/*<RestaurantCard key={i} restaurant={restaurant} />*/
 									<RestaurantCard key={i} restaurant={restaurant}>
-										{restaurant.name}
+										{(() => {
+											const foundItem = openingHours.find((item) => item.hours.restaurant_id === restaurant.id)
+											return foundItem ? (
+												<>
+													<OpenHoursBadge isOpen={foundItem.hours.is_open} label={foundItem.hours.is_open ? 'Open' : 'Closed'} />
+												</>
+											) : (
+												<p>{restaurant.name}</p>
+											)
+										})()}
 									</RestaurantCard>
 								))}
 							</article>

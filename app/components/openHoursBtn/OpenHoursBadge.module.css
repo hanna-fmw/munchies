@@ -1,0 +1,25 @@
+.openHoursBtn {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	padding: 8px 12px 8px 12px;
+	border-radius: 8px;
+	border: var(--border-1);
+	box-shadow: var(--shadow-1);
+	background-color: var(--color-white);
+	font-size: var(--font-size-body);
+}
+
+.open {
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+	background-color: var(--color-green);
+}
+
+.closed {
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+	background-color: red;
+}

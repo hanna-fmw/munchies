@@ -1,5 +1,5 @@
 .restaurantCard {
-	height: 20vh;
+	height: 25vh;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -9,7 +9,6 @@
 	border: var(--border-1);
 	box-shadow: var(--shadow-1);
 	background-color: var(--color-white);
-	position: relative;
 	margin-bottom: 0.5rem;
 }
 
@@ -19,15 +18,19 @@
 	font-weight: var(--font-weight-h1);
 }
 
-.leftSide,
-.rightSide {
+.topRow,
+.bottomRow {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding-right: 1rem;
 }
 
-.timeRangeBtn {
+.topRowBadges {
+	display: flex;
+	gap: 0.4rem;
+}
+
+.deliveryTimeBadge {
 	padding: 8px 12px 8px 12px;
 	border-radius: 8px;
 	border: var(--border-1);
@@ -37,17 +40,5 @@
 }
 
 .restaurantArrow {
-	position: absolute;
-	bottom: 0.5rem;
-	right: 0.5rem;
-	width: 25px;
-	height: 25px;
-}
-
-.restaurantIcon {
-	position: absolute;
-	top: 0;
-	right: 0;
-	width: 70px;
-	height: 70px;
+	transform: translate(-25%, -25%);
 }
