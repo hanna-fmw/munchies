@@ -8,7 +8,7 @@ type OpenHoursBadgeProps = {
 
 const OpenHoursBtn = ({ isOpen, label }: OpenHoursBadgeProps) => {
 	return (
-		<aside className={styles.openHoursBtn}>
+		<aside className={styles.openHoursBadge}>
 			<div className={isOpen ? styles.open : styles.closed}></div>
 			<div>{label}</div>
 		</aside>
