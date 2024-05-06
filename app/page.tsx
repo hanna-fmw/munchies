@@ -30,7 +30,7 @@ export default function Home() {
 	const [activeFilters, setActiveFilters] = useState<string[]>([])
 	const [restaurants, setRestaurants] = useState<Restaurant[]>([])
 	const [filters, setFilters] = useState<any>([])
-	const [deliveryRange, setDeliveryRange] = useState<string[]>([])
+	const [deliveryTimeRange, setDeliveryTimeRange] = useState<string[]>([])
 	const [activeTimeRange, setActiveTimeRange] = useState<number | null>(null) // State to track the active time range button
 
 	const timeRanges = [
@@ -59,6 +59,13 @@ export default function Home() {
 		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/filter')
 		const data = await res.json()
 		setFilters(data.filters)
+	}
+
+	const getOpeningHours = async () => {
+		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/open/af18f0b2-7227-4485-b706-664ef7d3525b')
+		// const res = await fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/open/${restaurantId}`)
+		const data = await res.json()
+		setFilters(data)
 	}
 
 	const toggleFilter = (filter: string) => {
@@ -90,7 +97,7 @@ export default function Home() {
 	const filterByTimeRange = (minTime: number, maxTime: number, index: number) => {
 		if (activeTimeRange === index) {
 			setActiveTimeRange(null)
-			setDeliveryRange([])
+			setDeliveryTimeRange([])
 		} else {
 			const restaurantsFilteredByTimeRange = restaurants.reduce<string[]>((acc, restaurant) => {
 				if (restaurant.delivery_time_minutes >= minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)) {
@@ -99,9 +106,9 @@ export default function Home() {
 				return acc
 			}, [])
 
-			setDeliveryRange(restaurantsFilteredByTimeRange)
+			setDeliveryTimeRange(restaurantsFilteredByTimeRange)
 			setActiveTimeRange(index)
-			console.log('Updated deliveryRange', restaurantsFilteredByTimeRange)
+			console.log('Updated deliveryTimeRange', restaurantsFilteredByTimeRange)
 		}
 	}
 
@@ -134,7 +141,7 @@ export default function Home() {
 							))}
 						</div>
 						<div>
-							{deliveryRange.map((restaurant, i) => (
+							{deliveryTimeRange.map((restaurant, i) => (
 								<div key={i}>{restaurant}</div>
 							))}
 						</div>
@@ -188,7 +195,7 @@ export default function Home() {
 							</div>
 
 							{/* <div>
-								{deliveryRange.map((restaurant, i) => (
+								{deliveryTimeRange.map((restaurant, i) => (
 									<div key={i}>{restaurant}</div>
 								))}
 							</div> */}
