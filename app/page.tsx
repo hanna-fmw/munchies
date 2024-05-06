@@ -8,7 +8,7 @@ import DeliveryTimeBtn from './components/deliveryTimeBtn/DeliveryTimeBtn'
 import logoDark from '@/public/logo-dark.png'
 import RestaurantCard from './components/restaurantCard/RestaurantCard'
 import PriceRange from './components/priceRange/PriceRange'
-import OpenHoursBadge from './components/openHoursBadge/OpenHoursBadge'
+import Badge from './components/badge/Badge'
 
 type Restaurant = {
 	id: string
@@ -61,7 +61,7 @@ export default function Home() {
 		{ minTime: 61, maxTime: Infinity, label: '1 hour+' },
 	]
 
-	const priceRanges = ['$', '$$', '$$$', '$$$$']
+	// const priceRanges = ['$', '$$', '$$$', '$$$$']
 
 	useEffect(() => {
 		setActiveFilters([])
@@ -107,7 +107,6 @@ export default function Home() {
 		const res = await fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/price-range/${priceTierId}`)
 		const data = await res.json()
 
-		console.log('Logging priceTiers state', data)
 		//We put each "price ranges data" object (which consists
 		//of id and range - as seen in swagger response) in an array:
 		//@ts-ignore
@@ -164,19 +163,44 @@ export default function Home() {
 		}
 	}
 
-	const handlePriceTierSelect = (tierId: string) => {
-		setActivePriceTier((prevTier) => (prevTier === tierId ? null : tierId)) // Toggle functionality
+	// //tierId är själva dollartecknet(tecknen), så det första togglePriceTier gör
+	// //är att kolla om användaren har klickat på samma knapp som redan är aktiv, och
+	// //om inte så sätter vi den till den aktiva knappen. Sedan inuti denna
+	// //funktion så kör vi också filtreringen (filterRestaurantsByPriceTier)
+	// const togglePriceTier = (tierId: string) => {
+	// 	setActivePriceTier((prevTier) => (prevTier === tierId ? null : tierId))
+	// 	filterRestaurantsByPriceTier(tierId)
+	// }
+
+	// const filterRestaurantsByPriceTier = (tierId: string) => {
+	// 	if (tierId === activePriceTier) {
+	// 		setFilteredRestaurants(restaurants)
+	// 	} else {
+	// 		// const filtered = restaurants.filter((restaurant) => restaurant.price_range_id === tierId)
+	// 		// setFilteredRestaurants(filtered)
+	// 		const filtered = restaurants.filter((restaurant) => restaurant.price_range_id === tierId)
+	// 		setFilteredRestaurants(filtered)
+	// 	}
+	// }
+	const togglePriceTier = (tierSymbol: string) => {
+		const tierObject = priceTiers.find((pt) => pt.priceTier.tier === tierSymbol)
+		if (!tierObject) return // Safeguard in case the tier isn't found
+
+		const tierId = tierObject.priceTier.id
+		setActivePriceTier((prevTier) => (prevTier === tierId ? null : tierId))
 		filterRestaurantsByPriceTier(tierId)
 	}
 
 	const filterRestaurantsByPriceTier = (tierId: string) => {
-		if (tierId === activePriceTier) {
-			setFilteredRestaurants(restaurants)
+		if (!tierId || tierId === activePriceTier) {
+			setFilteredRestaurants(restaurants) // Clear filter if same tier is clicked again
 		} else {
 			const filtered = restaurants.filter((restaurant) => restaurant.price_range_id === tierId)
 			setFilteredRestaurants(filtered)
 		}
 	}
+
+	const priceRanges = priceTiers.map((pt) => pt.priceTier.tier)
 
 	// useEffect(() => {
 	// 	document.body.style.overflowY = isModalOpen ? 'hidden' : 'auto'
@@ -216,8 +240,16 @@ export default function Home() {
 					<div className={styles.priceRangeContainer}>
 						<h2 className={styles.subtitle}>Price Range</h2>
 						<div className={styles.priceRangeCards}>
-							{priceRanges.map((priceTier, i) => (
-								<PriceRange key={i} priceTier={priceTier} isActive={activePriceTier === priceTier} onClick={() => handlePriceTierSelect(priceTier)} />
+							{/* {priceRanges.map((priceTier, i) => (
+								<PriceRange key={i} priceTier={priceTier} isActive={activePriceTier === priceTier} onClick={() => togglePriceTier(priceTier)} />
+							))} */}
+							{priceTiers.map((priceTier, i) => (
+								<PriceRange
+									key={i}
+									priceTier={priceTier.priceTier.tier}
+									isActive={activePriceTier === priceTier.priceTier.id}
+									onClick={() => togglePriceTier(priceTier.priceTier.tier)}
+								/>
 							))}
 						</div>
 					</div>
@@ -279,11 +311,23 @@ export default function Home() {
 							<article className={styles.restaurantCardContainer}>
 								{filteredRestaurants.map((filteredRestaurant, i) => (
 									<RestaurantCard key={i} restaurant={filteredRestaurant}>
+										{/* Display Open/Closed on restaurant card in filtered restaurants view */}
 										{(() => {
 											const foundItem = openingHours.find((item) => item.hours.restaurant_id === filteredRestaurant.id)
 											return foundItem ? (
 												<>
-													<OpenHoursBadge isOpen={foundItem.hours.is_open} label={foundItem.hours.is_open ? 'Open' : 'Closed'} />
+													<Badge isOpen={foundItem.hours.is_open} label={foundItem.hours.is_open ? 'Open' : 'Closed'} />
+												</>
+											) : (
+												<p>{filteredRestaurant.name}</p>
+											)
+										})()}
+										{/* Display price range on restaurant card in filtered restaurants view */}
+										{(() => {
+											const foundItem = priceTiers.find((item) => item.priceTier.id === filteredRestaurant.price_range_id)
+											return foundItem ? (
+												<>
+													<Badge label={foundItem.priceTier.tier} />
 												</>
 											) : (
 												<p>{filteredRestaurant.name}</p>
@@ -296,11 +340,24 @@ export default function Home() {
 							<article className={styles.restaurantCardContainer}>
 								{restaurants.map((restaurant, i) => (
 									<RestaurantCard key={i} restaurant={restaurant}>
+										{/* Display Open/Closed on restaurant card */}
 										{(() => {
 											const foundItem = openingHours.find((item) => item.hours.restaurant_id === restaurant.id)
 											return foundItem ? (
 												<>
-													<OpenHoursBadge isOpen={foundItem.hours.is_open} label={foundItem.hours.is_open ? 'Open' : 'Closed'} />
+													<Badge isOpen={foundItem.hours.is_open} label={foundItem.hours.is_open ? 'Open' : 'Closed'} />
+												</>
+											) : (
+												<p>{restaurant.name}</p>
+											)
+										})()}
+
+										{/* Display price range on restaurant card */}
+										{(() => {
+											const foundItem = priceTiers.find((item) => item.priceTier.id === restaurant.price_range_id)
+											return foundItem ? (
+												<>
+													<Badge label={foundItem.priceTier.tier} />
 												</>
 											) : (
 												<p>{restaurant.name}</p>
