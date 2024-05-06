@@ -8,7 +8,7 @@ import DeliveryTimeBtn from './components/deliveryTimeBtn/DeliveryTimeBtn'
 import logoDark from '@/public/logo-dark.png'
 import RestaurantCard from './components/restaurantCard/RestaurantCard'
 import PriceRange from './components/priceRange/PriceRange'
-import OpenHoursBadge from './components/openHoursBtn/OpenHoursBadge'
+import OpenHoursBadge from './components/openHoursBadge/OpenHoursBadge'
 
 type Restaurant = {
 	id: string
