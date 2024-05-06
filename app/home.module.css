@@ -3,10 +3,6 @@
 	margin: 0 auto;
 }
 
-.sidePanel {
-	display: none;
-}
-
 .logo {
 	align-self: flex-start;
 	padding-top: 4rem;
@@ -21,13 +17,22 @@
 	color: #9c9c9c;
 }
 
-.deliveryTimeContainer {
+.display {
+	font-size: var(--font-size-display);
+	line-height: var(--font-line-height-display);
+	letter-spacing: var(--font-letter-spacing-display);
+	font-weight: var(--font-weight-display);
+}
+
+.timeRangeContainer,
+.priceRangeContainer {
 	padding-block: var(--spacing-large);
 }
 
-.timeRangeCards {
+.timeRangeCards,
+.priceRangeCards {
 	display: flex;
-	gap: 1rem;
+	gap: var(--spacing-small);
 }
 
 .filterCardContainer {
@@ -44,6 +49,14 @@
 	display: grid;
 	grid-template-columns: 1fr;
 	column-gap: 1rem;
+}
+
+.mobileContainers {
+	display: block;
+}
+
+.sidePanel {
+	display: none;
 }
 
 @media (min-width: 550px) {
@@ -65,24 +78,12 @@
 }
 
 @media (min-width: 1024px) {
-	.filterCardContainer.filterCardContainerSidePanel {
+	.sidePanel {
 		display: flex;
-		flex-direction: column;
 	}
 
-	.categoryName {
-		font-family: var(--font-family-primary);
-	}
-
-	.active {
-		/* border: 2px solid var(--color-green); */
-		text-decoration: underline;
-		text-underline-offset: 6px;
-		text-decoration-color: var(--color-green);
-	}
-
-	.restaurantCardContainer {
-		grid-template-columns: repeat(3, 1fr);
+	.mobileContainers {
+		display: none;
 	}
 
 	.layoutGrid {
@@ -104,30 +105,41 @@
 		flex-direction: column;
 	}
 
+	.filterCardContainer.filterCardContainerSidePanel {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.active {
+		border: 2px solid var(--color-green);
+	}
+
+	.restaurantCardContainer {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
 	.foodCategory {
 		grid-column: 1;
 		grid-row: 1/2;
 	}
 
-	.deliveryTimeContainer {
+	.timeRangeContainer {
 		grid-column: 1;
 		grid-row: 2/3;
-	}
-
-	.priceRangeContainer {
-		grid-column: 1;
-		grid-row: 3/4;
 	}
 
 	.timeRangeCards {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 	}
+
+	.priceRangeContainer {
+		grid-column: 1;
+		grid-row: 3/4;
+	}
 }
 
 @media (min-width: 1024px) {
-	/*Two classes to distinguish styles for
-	category cards in top menu and side panel*/
 	.filterCardContainer {
 		grid-template-columns: repeat(7, 1fr);
 	}

@@ -2,7 +2,7 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import Image from 'next/image'
 import styles from './Modal.module.css'
-import Button from '../button/Button'
+import Button from '@/app/components/button/Button'
 import logotype from '@/public/Logo-light.png'
 
 type ModalProps = {

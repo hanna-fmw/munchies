@@ -7,6 +7,7 @@
 	background-color: var(--color-white);
 	cursor: pointer;
 	padding: 0.5rem;
+	font-size: var(--font-size-body);
 }
 
 .categoryName {
@@ -16,4 +17,3 @@
 .active {
 	border: 2px solid var(--color-green);
 }
-

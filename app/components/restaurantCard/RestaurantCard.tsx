@@ -15,7 +15,7 @@ const RestaurantCard = ({ restaurant, children }: RestaurantCardProps) => {
 	return (
 		<section className={styles.restaurantCard}>
 			<aside className={styles.leftSide}>
-				<div className={styles.deliveryTimeBtn}>{restaurant.delivery_time_minutes} min</div>
+				<div className={styles.timeRangeBtn}>{restaurant.delivery_time_minutes} min</div>
 				<Image
 					src={`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/${restaurant.image_url}`}
 					width={50}
