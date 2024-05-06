@@ -41,16 +41,18 @@ type PriceTier = {
 
 export default function Home() {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(true)
+	const [restaurants, setRestaurants] = useState<Restaurant[]>([])
 	const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>([])
+	const [filters, setFilters] = useState<any>([])
 	const [activeFilters, setActiveFilters] = useState<string[]>([])
 
-	const [restaurants, setRestaurants] = useState<Restaurant[]>([])
-	const [filters, setFilters] = useState<any>([])
 	const [deliveryTimeRange, setDeliveryTimeRange] = useState<string[]>([])
 	const [activeTimeRange, setActiveTimeRange] = useState<number | null>(null)
 
-	const [openingHours, setOpeningHours] = useState<Hours[]>([])
 	const [priceTiers, setPriceTiers] = useState<PriceTier[]>([])
+	const [activePriceTier, setActivePriceTier] = useState<string | null>(null)
+
+	const [openingHours, setOpeningHours] = useState<Hours[]>([])
 
 	const timeRanges = [
 		{ minTime: 0, maxTime: 10, label: '0-10 min' },
@@ -64,13 +66,17 @@ export default function Home() {
 	useEffect(() => {
 		setActiveFilters([])
 		setActiveTimeRange(null)
+		setActivePriceTier(null)
 		getAllRestaurants()
 		getAllFilters()
 	}, [])
 
 	useEffect(() => {
-		console.log('This is the openingHours state', openingHours)
-	}, [openingHours])
+		if (process.env.NODE_ENV !== 'production') {
+			console.log('Logging activePriceTier', activePriceTier)
+			console.log('Logging priceTiers', priceTiers)
+		}
+	}, [activePriceTier, priceTiers])
 
 	const getAllRestaurants = async () => {
 		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/restaurants')
@@ -89,7 +95,7 @@ export default function Home() {
 		const res = await fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/open/${restaurantId}`)
 		const data = await res.json()
 
-		console.log('opening hours', data)
+		// console.log('opening hours', data)
 		//We put each "opening hours data" object (which consists
 		//of restaurant_id and is_open - as seen in swagger response) in an array:
 		//@ts-ignore
@@ -101,7 +107,7 @@ export default function Home() {
 		const res = await fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/price-range/${priceTierId}`)
 		const data = await res.json()
 
-		console.log('price tiers', data)
+		console.log('Logging priceTiers state', data)
 		//We put each "price ranges data" object (which consists
 		//of id and range - as seen in swagger response) in an array:
 		//@ts-ignore
@@ -158,6 +164,20 @@ export default function Home() {
 		}
 	}
 
+	const handlePriceTierSelect = (tierId: string) => {
+		setActivePriceTier((prevTier) => (prevTier === tierId ? null : tierId)) // Toggle functionality
+		filterRestaurantsByPriceTier(tierId)
+	}
+
+	const filterRestaurantsByPriceTier = (tierId: string) => {
+		if (tierId === activePriceTier) {
+			setFilteredRestaurants(restaurants)
+		} else {
+			const filtered = restaurants.filter((restaurant) => restaurant.price_range_id === tierId)
+			setFilteredRestaurants(filtered)
+		}
+	}
+
 	// useEffect(() => {
 	// 	document.body.style.overflowY = isModalOpen ? 'hidden' : 'auto'
 
@@ -193,14 +213,14 @@ export default function Home() {
 						</div>
 					</section>
 
-					<section className={styles.priceRangeContainer}>
+					<div className={styles.priceRangeContainer}>
 						<h2 className={styles.subtitle}>Price Range</h2>
 						<div className={styles.priceRangeCards}>
-							{priceRanges.map((priceRange, i) => (
-								<PriceRange priceRange={priceRange} key={i} />
+							{priceRanges.map((priceTier, i) => (
+								<PriceRange key={i} priceTier={priceTier} isActive={activePriceTier === priceTier} onClick={() => handlePriceTierSelect(priceTier)} />
 							))}
 						</div>
-					</section>
+					</div>
 				</div>
 				<section className={styles.layoutGrid}>
 					<aside className={styles.sidePanel}>
@@ -234,15 +254,10 @@ export default function Home() {
 						</section>
 						<section className={styles.priceRangeContainer}>
 							<h2 className={styles.subtitle}>Price Range</h2>
-							<div className={styles.priceRangeCards}>
+							{/* Detta är i desktop-vy, men jag gör allt med priceranges uppe i mobilecontainers */}
+							{/* <div className={styles.priceRangeCards}>
 								{priceRanges.map((priceRange, i) => (
 									<PriceRange priceRange={priceRange} key={i} />
-								))}
-							</div>
-
-							{/* <div>
-								{deliveryTimeRange.map((restaurant, i) => (
-									<div key={i}>{restaurant}</div>
 								))}
 							</div> */}
 						</section>

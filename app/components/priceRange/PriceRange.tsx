@@ -1,15 +1,17 @@
 import React from 'react'
 import styles from './PriceRange.module.css'
 
-type PriceRangeProps = {
-	priceRange: string
+type PriceTierProps = {
+	priceTier: string
+	isActive: boolean
+	onClick: () => void
 }
 
-const PriceRange = ({ priceRange }: PriceRangeProps) => {
+const PriceRange = ({ priceTier, isActive, onClick }: PriceTierProps) => {
 	return (
-		<>
-			<button className={styles.priceRangeBtn}>{priceRange}</button>
-		</>
+		<button className={`${styles.priceRangeBtn} ${isActive ? styles.active : ''}`} onClick={onClick}>
+			{priceTier}
+		</button>
 	)
 }
 

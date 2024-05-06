@@ -6,3 +6,7 @@
 	background-color: var(--color-white);
 	font-size: var(--font-size-body);
 }
+
+.active {
+	border: 1px solid magenta;
+}
