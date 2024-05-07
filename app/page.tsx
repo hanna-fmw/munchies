@@ -163,25 +163,6 @@ export default function Home() {
 		}
 	}
 
-	// //tierId är själva dollartecknet(tecknen), så det första togglePriceTier gör
-	// //är att kolla om användaren har klickat på samma knapp som redan är aktiv, och
-	// //om inte så sätter vi den till den aktiva knappen. Sedan inuti denna
-	// //funktion så kör vi också filtreringen (filterRestaurantsByPriceTier)
-	// const togglePriceTier = (tierId: string) => {
-	// 	setActivePriceTier((prevTier) => (prevTier === tierId ? null : tierId))
-	// 	filterRestaurantsByPriceTier(tierId)
-	// }
-
-	// const filterRestaurantsByPriceTier = (tierId: string) => {
-	// 	if (tierId === activePriceTier) {
-	// 		setFilteredRestaurants(restaurants)
-	// 	} else {
-	// 		// const filtered = restaurants.filter((restaurant) => restaurant.price_range_id === tierId)
-	// 		// setFilteredRestaurants(filtered)
-	// 		const filtered = restaurants.filter((restaurant) => restaurant.price_range_id === tierId)
-	// 		setFilteredRestaurants(filtered)
-	// 	}
-	// }
 	const togglePriceTier = (tierSymbol: string) => {
 		const tierObject = priceTiers.find((pt) => pt.priceTier.tier === tierSymbol)
 		if (!tierObject) return // Safeguard in case the tier isn't found
@@ -200,7 +181,8 @@ export default function Home() {
 		}
 	}
 
-	const priceRanges = priceTiers.map((pt) => pt.priceTier.tier)
+	// const priceRanges = priceTiers.map((pt) => pt.priceTier.tier)
+	// const priceRanges = ['$', '$$', '$$$', '$$$$']
 
 	// useEffect(() => {
 	// 	document.body.style.overflowY = isModalOpen ? 'hidden' : 'auto'
