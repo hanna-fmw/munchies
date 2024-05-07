@@ -1,3 +1,4 @@
+//@ts-nocheck
 'use client'
 import styles from './home.module.css'
 import Modal from './components/modal/Modal'
@@ -137,24 +138,6 @@ export default function Home() {
 	// 	//@ts-ignore
 	// 	setPriceTiers((prevPriceTiers) => [...prevPriceTiers, { priceTier: { id: data.id, tier: data.range } }])
 	// }
-
-	const getAllFilters = async () => {
-		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/filter')
-		const data = await res.json()
-		setFilters(data.filters)
-	}
-
-	const toggleFilter = (filter: string) => {
-		let newActiveFilters = []
-		if (activeFilters.includes(filter)) {
-			newActiveFilters = activeFilters.filter((f) => f !== filter)
-		} else {
-			newActiveFilters = [...activeFilters, filter]
-		}
-		setActiveFilters(newActiveFilters)
-		filterRestaurants(newActiveFilters)
-	}
-
 	const filterRestaurants = (activeCategories: string[]) => {
 		const filtered = restaurants.filter((restaurant) => restaurant.filter_ids.some((fid) => activeCategories.includes(fid)))
 
@@ -169,50 +152,51 @@ export default function Home() {
 
 		setFilteredRestaurants(uniqueFiltered)
 	}
-
-	const filterByTimeRange = (minTime: number, maxTime: number, index: number) => {
-		if (activeTimeRange === index) {
-			setActiveTimeRange(null)
-			setDeliveryTimeRange([])
-		} else {
-			const restaurantsFilteredByTimeRange = restaurants.reduce<string[]>((acc, restaurant) => {
-				if (restaurant.delivery_time_minutes >= minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)) {
-					return [...acc, restaurant.name]
-				}
-				return acc
-			}, [])
-
-			setDeliveryTimeRange(restaurantsFilteredByTimeRange)
-			setActiveTimeRange(index)
-			console.log('Updated deliveryTimeRange', restaurantsFilteredByTimeRange)
-		}
+	const getAllFilters = async () => {
+		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/filter')
+		const data = await res.json()
+		setFilters(data.filters)
 	}
 
-	const togglePriceTier = (tierSymbol: string) => {
-		//@ts-ignore
-		const tierId = Object.keys(priceTiers).find((key) => priceTiers[key] === tierSymbol)
-		//@ts-ignore
-		setActivePriceTier((prevTier) => (prevTier === tierId ? null : tierId))
-		//@ts-ignore
-		filterRestaurantsByPriceTier(tierId)
-	}
-
-	const filterRestaurantsByPriceTier = (tierId: string) => {
-		if (!tierId || tierId === activePriceTier) {
-			setFilteredRestaurants(restaurants) // Clear filter if same tier is clicked again
-		} else {
-			const filtered = restaurants.filter((restaurant) => restaurant.price_range_id === tierId)
-			setFilteredRestaurants(filtered)
-		}
-	}
+	//////////////////////////////////////////////////////////
+	//OPTION 1
+	//DETTA AVSNITTET ÄR OPTION 1, LITE "SÄMRE", VARJE FILTER
+	//ÄR MER SEPARAT TROR JAG
+	//////////////////////////////////////////////////////////
+	// const toggleFilter = (filter: string) => {
+	// 	let newActiveFilters = []
+	// 	if (activeFilters.includes(filter)) {
+	// 		newActiveFilters = activeFilters.filter((f) => f !== filter)
+	// 	} else {
+	// 		newActiveFilters = [...activeFilters, filter]
+	// 	}
+	// 	setActiveFilters(newActiveFilters)
+	// 	filterRestaurants(newActiveFilters)
+	// }
 
 	// const togglePriceTier = (tierSymbol: string) => {
-	// 	const tierObject = priceTiers.find((pt) => pt.priceTier.tier === tierSymbol)
-	// 	if (!tierObject) return // Safeguard in case the tier isn't found
-
-	// 	const tierId = tierObject.priceTier.id
+	// 	//@ts-ignore
+	// 	const tierId = Object.keys(priceTiers).find((key) => priceTiers[key] === tierSymbol)
+	// 	//@ts-ignore
 	// 	setActivePriceTier((prevTier) => (prevTier === tierId ? null : tierId))
+	// 	//@ts-ignore
 	// 	filterRestaurantsByPriceTier(tierId)
+	// }
+
+	// const filterByTimeRange = (minTime: number, maxTime: number, index: number) => {
+	// 	if (activeTimeRange === index) {
+	// 		// Deselecting the same time range will reset the filter
+	// 		setActiveTimeRange(null)
+	// 		setFilteredRestaurants(restaurants)
+	// 	} else {
+	// 		// Apply the time range filter
+	// 		const filtered = restaurants.filter((restaurant) => {
+	// 			return restaurant.delivery_time_minutes >= minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)
+	// 		})
+
+	// 		setFilteredRestaurants(filtered)
+	// 		setActiveTimeRange(index)
+	// 	}
 	// }
 
 	// const filterRestaurantsByPriceTier = (tierId: string) => {
@@ -223,9 +207,74 @@ export default function Home() {
 	// 		setFilteredRestaurants(filtered)
 	// 	}
 	// }
+	//////////////////////////////////////////////////////////
+	//OPTION 1 SLUTAR HÄR (option 2 som är det aktiva och bättre
+	//är det som är aktivt här nedan)
+	//////////////////////////////////////////////////////////
 
-	// const priceRanges = priceTiers.map((pt) => pt.priceTier.tier)
-	// const priceRanges = ['$', '$$', '$$$', '$$$$']
+	//////////////////////////////////////////////////////////
+	//OPTION 2
+	//DETTA OPTION BÄST, TAR MED ALLA FILTER, enligt chat-gpt:
+	//This not only simplifies your codebase but also minimizes
+	//the potential for bugs by reducing the redundancy of filter
+	//application logic.  It is easier to maintain and
+	//ensures that any future additions or modifications to
+	//filtering criteria can be implemented more smoothly.
+	//////////////////////////////////////////////////////////
+	const applyFilters = () => {
+		let result = restaurants
+
+		// Filter by category if any active category filters
+		if (activeFilters.length > 0) {
+			result = result.filter((restaurant) => restaurant.filter_ids.some((fid) => activeFilters.includes(fid)))
+		}
+
+		// Filter by price range if selected
+		if (activePriceTier) {
+			result = result.filter((restaurant) => restaurant.price_range_id === activePriceTier)
+		}
+
+		// Filter by delivery time if selected
+		if (activeTimeRange !== null) {
+			const { minTime, maxTime } = timeRanges[activeTimeRange]
+			result = result.filter((restaurant) => {
+				return restaurant.delivery_time_minutes >= minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)
+			})
+		}
+
+		setFilteredRestaurants(result)
+	}
+
+	// Use this function in your toggle functions
+	const toggleFilter = (filter: string) => {
+		let newActiveFilters = []
+		if (activeFilters.includes(filter)) {
+			newActiveFilters = activeFilters.filter((f) => f !== filter)
+		} else {
+			newActiveFilters = [...activeFilters, filter]
+		}
+		setActiveFilters(newActiveFilters)
+		applyFilters() // Reapply all filters
+	}
+
+	const togglePriceTier = (tierSymbol: string) => {
+		const tierId = Object.keys(priceTiers).find((key) => priceTiers[key] === tierSymbol)
+		setActivePriceTier((prevTier) => (prevTier === tierId ? null : tierId))
+		applyFilters() // Reapply all filters
+	}
+
+	const filterByTimeRange = (minTime: number, maxTime: number, index: number) => {
+		if (activeTimeRange === index) {
+			setActiveTimeRange(null)
+		} else {
+			setActiveTimeRange(index)
+		}
+		applyFilters() // Reapply all filters
+	}
+
+	//////////////////////////////////////////////////////////
+	//HÄR SLUTAR OPTION 2
+	//////////////////////////////////////////////////////////
 
 	// useEffect(() => {
 	// 	document.body.style.overflowY = isModalOpen ? 'hidden' : 'auto'
