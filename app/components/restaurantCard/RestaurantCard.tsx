@@ -17,7 +17,7 @@ const RestaurantCard = ({ restaurant, children }: RestaurantCardProps) => {
 			<aside className={styles.topRow}>
 				<div className={styles.deliveryTimeContainer}>
 					<div className={styles.topRowBadges}>
-						<div className={styles.deliveryTimeBadge}>{restaurant.delivery_time_minutes} min</div>
+						<div className={styles.deliveryTimeBadge}>{restaurant.delivery_time_minutes}&nbsp;min</div>
 						{/* In this case children is the OpenHoursBadge */}
 						{children}
 					</div>

@@ -278,7 +278,7 @@ export default function Home() {
 						))}
 					</section>
 					<section>
-						<h1 className={styles.display}>Restaurants</h1>
+						<h1 className={`${styles.display} ${styles.h2}`}>Restaurants</h1>
 						{filteredRestaurants.length > 0 ? (
 							<article className={styles.restaurantCardContainer}>
 								{filteredRestaurants.map((filteredRestaurant, i) => (

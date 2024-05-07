@@ -1,5 +1,5 @@
 .priceRangeBtn {
-	padding: 8px 12px 8px 12px;
+	padding: 0.5rem 0.75rem 0.5rem 0.75rem;
 	border-radius: 8px;
 	border: var(--border-1);
 	box-shadow: var(--shadow-1);

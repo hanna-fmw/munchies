@@ -48,6 +48,7 @@
 
 .p {
 	color: #fff;
+	font-family: var(--font-family-primary);
 }
 
 @media (min-width: 376px) {

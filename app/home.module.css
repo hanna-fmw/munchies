@@ -18,11 +18,11 @@
 	color: #9c9c9c;
 }
 
-.display {
-	font-size: var(--font-size-display);
-	line-height: var(--font-line-height-display);
-	letter-spacing: var(--font-letter-spacing-display);
-	font-weight: var(--font-weight-display);
+.h2 {
+	font-size: var(--font-size-h2);
+	line-height: var(--font-line-height-h2);
+	letter-spacing: var(--font-letter-spacing-h2);
+	font-weight: var(--font-weight-h2);
 }
 
 .timeRangeContainer,
@@ -147,10 +147,19 @@
 		grid-column: 1;
 		grid-row: 3/4;
 	}
-}
 
-@media (min-width: 1024px) {
 	.filterCardContainer {
 		grid-template-columns: repeat(7, 1fr);
+	}
+
+	.main {
+		width: 80vw;
+	}
+
+	.display {
+		font-size: var(--font-size-display);
+		line-height: var(--font-line-height-display);
+		letter-spacing: var(--font-letter-spacing-display);
+		font-weight: var(--font-weight-display);
 	}
 }
