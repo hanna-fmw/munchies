@@ -82,36 +82,61 @@ export default function Home() {
 		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/restaurants')
 		const data = await res.json()
 		if (data.restaurants.length > 0) {
-			data.restaurants.forEach((restaurant: Restaurant) => {
-				getAllRestaurantsOpeningHours(restaurant.id)
-				getAllRestaurantsPriceTiers(restaurant.price_range_id)
-			})
+			const priceTierPromises = data.restaurants.map((restaurant) =>
+				fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/price-range/${restaurant.price_range_id}`).then((res) => res.json())
+			)
+
+			// This fetches opening hours for each restaurant simultaneously
+			const openingHoursPromises = data.restaurants.map((restaurant) =>
+				fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/open/${restaurant.id}`).then((res) => res.json())
+			)
+
+			const [priceTiers, openingHours] = await Promise.all([Promise.all(priceTierPromises), Promise.all(openingHoursPromises)])
+
+			// Create a mapping from price tier ID to tier symbol
+			const priceTierMapping = priceTiers.reduce(
+				(acc, pt) => ({
+					...acc,
+					[pt.id]: pt.range,
+				}),
+				{}
+			)
+
+			// Store opening hours in a structured format
+			const openingHoursMapping = openingHours.map((hours) => ({
+				restaurant_id: hours.restaurant_id,
+				is_open: hours.is_open,
+			}))
+
+			// Update states with fetched data
+			setPriceTiers(priceTierMapping)
+			setRestaurants(data.restaurants)
+			setOpeningHours(openingHoursMapping)
 		}
-		setRestaurants(data.restaurants)
 	}
 
-	// Function to fetch opening hours and update the state
-	const getAllRestaurantsOpeningHours = async (restaurantId: string) => {
-		const res = await fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/open/${restaurantId}`)
-		const data = await res.json()
+	// // Function to fetch opening hours and update the state
+	// const getAllRestaurantsOpeningHours = async (restaurantId: string) => {
+	// 	const res = await fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/open/${restaurantId}`)
+	// 	const data = await res.json()
 
-		// console.log('opening hours', data)
-		//We put each "opening hours data" object (which consists
-		//of restaurant_id and is_open - as seen in swagger response) in an array:
-		//@ts-ignore
-		setOpeningHours((prevHours) => [...prevHours, { hours: { restaurant_id: data.restaurant_id, is_open: data.is_open } }])
-	}
+	// 	// console.log('opening hours', data)
+	// 	//We put each "opening hours data" object (which consists
+	// 	//of restaurant_id and is_open - as seen in swagger response) in an array:
+	// 	//@ts-ignore
+	// 	setOpeningHours((prevHours) => [...prevHours, { hours: { restaurant_id: data.restaurant_id, is_open: data.is_open } }])
+	// }
 
-	// Function to fetch price ranges and update the state
-	const getAllRestaurantsPriceTiers = async (priceTierId: string) => {
-		const res = await fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/price-range/${priceTierId}`)
-		const data = await res.json()
+	// // Function to fetch price ranges and update the state
+	// const getAllRestaurantsPriceTiers = async (priceTierId: string) => {
+	// 	const res = await fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/price-range/${priceTierId}`)
+	// 	const data = await res.json()
 
-		//We put each "price ranges data" object (which consists
-		//of id and range - as seen in swagger response) in an array:
-		//@ts-ignore
-		setPriceTiers((prevPriceTiers) => [...prevPriceTiers, { priceTier: { id: data.id, tier: data.range } }])
-	}
+	// 	//We put each "price ranges data" object (which consists
+	// 	//of id and range - as seen in swagger response) in an array:
+	// 	//@ts-ignore
+	// 	setPriceTiers((prevPriceTiers) => [...prevPriceTiers, { priceTier: { id: data.id, tier: data.range } }])
+	// }
 
 	const getAllFilters = async () => {
 		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/filter')
@@ -164,11 +189,11 @@ export default function Home() {
 	}
 
 	const togglePriceTier = (tierSymbol: string) => {
-		const tierObject = priceTiers.find((pt) => pt.priceTier.tier === tierSymbol)
-		if (!tierObject) return // Safeguard in case the tier isn't found
-
-		const tierId = tierObject.priceTier.id
+		//@ts-ignore
+		const tierId = Object.keys(priceTiers).find((key) => priceTiers[key] === tierSymbol)
+		//@ts-ignore
 		setActivePriceTier((prevTier) => (prevTier === tierId ? null : tierId))
+		//@ts-ignore
 		filterRestaurantsByPriceTier(tierId)
 	}
 
@@ -180,6 +205,24 @@ export default function Home() {
 			setFilteredRestaurants(filtered)
 		}
 	}
+
+	// const togglePriceTier = (tierSymbol: string) => {
+	// 	const tierObject = priceTiers.find((pt) => pt.priceTier.tier === tierSymbol)
+	// 	if (!tierObject) return // Safeguard in case the tier isn't found
+
+	// 	const tierId = tierObject.priceTier.id
+	// 	setActivePriceTier((prevTier) => (prevTier === tierId ? null : tierId))
+	// 	filterRestaurantsByPriceTier(tierId)
+	// }
+
+	// const filterRestaurantsByPriceTier = (tierId: string) => {
+	// 	if (!tierId || tierId === activePriceTier) {
+	// 		setFilteredRestaurants(restaurants) // Clear filter if same tier is clicked again
+	// 	} else {
+	// 		const filtered = restaurants.filter((restaurant) => restaurant.price_range_id === tierId)
+	// 		setFilteredRestaurants(filtered)
+	// 	}
+	// }
 
 	// const priceRanges = priceTiers.map((pt) => pt.priceTier.tier)
 	// const priceRanges = ['$', '$$', '$$$', '$$$$']
@@ -222,15 +265,12 @@ export default function Home() {
 					<div className={styles.priceRangeContainer}>
 						<h2 className={styles.subtitle}>Price Range</h2>
 						<div className={styles.priceRangeCards}>
-							{/* {priceRanges.map((priceTier, i) => (
-								<PriceRange key={i} priceTier={priceTier} isActive={activePriceTier === priceTier} onClick={() => togglePriceTier(priceTier)} />
-							))} */}
-							{priceTiers.map((priceTier, i) => (
+							{['$', '$$', '$$$', '$$$$'].map((tierSymbol, i) => (
 								<PriceRange
 									key={i}
-									priceTier={priceTier.priceTier.tier}
-									isActive={activePriceTier === priceTier.priceTier.id}
-									onClick={() => togglePriceTier(priceTier.priceTier.tier)}
+									priceTier={tierSymbol}
+									isActive={activePriceTier === Object.keys(priceTiers).find((key) => priceTiers[key] === tierSymbol)}
+									onClick={() => togglePriceTier(tierSymbol)}
 								/>
 							))}
 						</div>
@@ -295,10 +335,10 @@ export default function Home() {
 									<RestaurantCard key={i} restaurant={filteredRestaurant}>
 										{/* Display Open/Closed on restaurant card in filtered restaurants view */}
 										{(() => {
-											const foundItem = openingHours.find((item) => item.hours.restaurant_id === filteredRestaurant.id)
+											const foundItem = openingHours.find((item) => item.restaurant_id === filteredRestaurant.id)
 											return foundItem ? (
 												<>
-													<Badge isOpen={foundItem.hours.is_open} label={foundItem.hours.is_open ? 'Open' : 'Closed'} />
+													<Badge isOpen={foundItem.is_open} label={foundItem.is_open ? 'Open' : 'Closed'} />
 												</>
 											) : (
 												<p>{filteredRestaurant.name}</p>
@@ -306,10 +346,10 @@ export default function Home() {
 										})()}
 										{/* Display price range on restaurant card in filtered restaurants view */}
 										{(() => {
-											const foundItem = priceTiers.find((item) => item.priceTier.id === filteredRestaurant.price_range_id)
-											return foundItem ? (
+											const priceTierLabel = priceTiers[filteredRestaurant.price_range_id] // Adjusted for direct map access
+											return priceTierLabel ? (
 												<>
-													<Badge label={foundItem.priceTier.tier} />
+													<Badge label={priceTierLabel} />
 												</>
 											) : (
 												<p>{filteredRestaurant.name}</p>
@@ -324,10 +364,11 @@ export default function Home() {
 									<RestaurantCard key={i} restaurant={restaurant}>
 										{/* Display Open/Closed on restaurant card */}
 										{(() => {
-											const foundItem = openingHours.find((item) => item.hours.restaurant_id === restaurant.id)
+											// Adjusting the access according to the simplified structure of openingHours
+											const foundItem = openingHours.find((item) => item.restaurant_id === restaurant.id)
 											return foundItem ? (
 												<>
-													<Badge isOpen={foundItem.hours.is_open} label={foundItem.hours.is_open ? 'Open' : 'Closed'} />
+													<Badge isOpen={foundItem.is_open} label={foundItem.is_open ? 'Open' : 'Closed'} />
 												</>
 											) : (
 												<p>{restaurant.name}</p>
@@ -336,10 +377,11 @@ export default function Home() {
 
 										{/* Display price range on restaurant card */}
 										{(() => {
-											const foundItem = priceTiers.find((item) => item.priceTier.id === restaurant.price_range_id)
-											return foundItem ? (
+											// Adjusting the priceTier access according to the mapping structure of priceTiers
+											const priceTierLabel = priceTiers[restaurant.price_range_id] // Assuming priceTiers is a map from ID to tier label
+											return priceTierLabel ? (
 												<>
-													<Badge label={foundItem.priceTier.tier} />
+													<Badge label={priceTierLabel} />
 												</>
 											) : (
 												<p>{restaurant.name}</p>
