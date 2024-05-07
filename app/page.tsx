@@ -221,22 +221,22 @@ export default function Home() {
 	//ensures that any future additions or modifications to
 	//filtering criteria can be implemented more smoothly.
 	//////////////////////////////////////////////////////////
-	const applyFilters = () => {
+	const applyFilters = (priceTier = activePriceTier, categoryFilters = activeFilters, timeRange = activeTimeRange) => {
 		let result = restaurants
 
 		// Filter by category if any active category filters
-		if (activeFilters.length > 0) {
-			result = result.filter((restaurant) => restaurant.filter_ids.some((fid) => activeFilters.includes(fid)))
+		if (categoryFilters.length > 0) {
+			result = result.filter((restaurant) => restaurant.filter_ids.some((fid) => categoryFilters.includes(fid)))
 		}
 
 		// Filter by price range if selected
-		if (activePriceTier) {
-			result = result.filter((restaurant) => restaurant.price_range_id === activePriceTier)
+		if (priceTier) {
+			result = result.filter((restaurant) => restaurant.price_range_id === priceTier)
 		}
 
 		// Filter by delivery time if selected
-		if (activeTimeRange !== null) {
-			const { minTime, maxTime } = timeRanges[activeTimeRange]
+		if (timeRange !== null) {
+			const { minTime, maxTime } = timeRanges[timeRange]
 			result = result.filter((restaurant) => {
 				return restaurant.delivery_time_minutes >= minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)
 			})
@@ -247,31 +247,29 @@ export default function Home() {
 
 	// Use this function in your toggle functions
 	const toggleFilter = (filter: string) => {
-		let newActiveFilters = []
-		if (activeFilters.includes(filter)) {
-			newActiveFilters = activeFilters.filter((f) => f !== filter)
-		} else {
-			newActiveFilters = [...activeFilters, filter]
-		}
-		setActiveFilters(newActiveFilters)
-		applyFilters() // Reapply all filters
+		setActiveFilters((prevFilters) => {
+			const newActiveFilters = prevFilters.includes(filter) ? prevFilters.filter((f) => f !== filter) : [...prevFilters, filter]
+			applyFilters(activePriceTier, newActiveFilters, activeTimeRange) // Use new state directly
+			return newActiveFilters
+		})
 	}
 
 	const togglePriceTier = (tierSymbol: string) => {
 		const tierId = Object.keys(priceTiers).find((key) => priceTiers[key] === tierSymbol)
-		setActivePriceTier((prevTier) => (prevTier === tierId ? null : tierId))
-		applyFilters() // Reapply all filters
+		setActivePriceTier((prevTier) => {
+			const newTier = prevTier === tierId ? null : tierId
+			applyFilters(newTier, activeFilters, activeTimeRange) // Pass new state directly
+			return newTier
+		})
 	}
 
 	const filterByTimeRange = (minTime: number, maxTime: number, index: number) => {
-		if (activeTimeRange === index) {
-			setActiveTimeRange(null)
-		} else {
-			setActiveTimeRange(index)
-		}
-		applyFilters() // Reapply all filters
+		setActiveTimeRange((prevRange) => {
+			const newRange = prevRange === index ? null : index
+			applyFilters(activePriceTier, activeFilters, newRange) // Use new state directly
+			return newRange
+		})
 	}
-
 	//////////////////////////////////////////////////////////
 	//HÄR SLUTAR OPTION 2
 	//////////////////////////////////////////////////////////
