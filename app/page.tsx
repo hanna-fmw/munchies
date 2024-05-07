@@ -62,8 +62,6 @@ export default function Home() {
 		{ minTime: 61, maxTime: Infinity, label: '1 hour+' },
 	]
 
-	// const priceRanges = ['$', '$$', '$$$', '$$$$']
-
 	useEffect(() => {
 		setActiveFilters([])
 		setActiveTimeRange(null)
@@ -87,14 +85,14 @@ export default function Home() {
 				fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/price-range/${restaurant.price_range_id}`).then((res) => res.json())
 			)
 
-			// This fetches opening hours for each restaurant simultaneously
 			const openingHoursPromises = data.restaurants.map((restaurant) =>
 				fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/open/${restaurant.id}`).then((res) => res.json())
 			)
 
+			// Execute promises simultaneously
 			const [priceTiers, openingHours] = await Promise.all([Promise.all(priceTierPromises), Promise.all(openingHoursPromises)])
 
-			// Create a mapping from price tier ID to tier symbol
+			// Map price tier ID to tier symbol (dollar sign)
 			const priceTierMapping = priceTiers.reduce(
 				(acc, pt) => ({
 					...acc,
@@ -103,7 +101,7 @@ export default function Home() {
 				{}
 			)
 
-			// Store opening hours in a structured format
+			// Store opening hours in an object
 			const openingHoursMapping = openingHours.map((hours) => ({
 				restaurant_id: hours.restaurant_id,
 				is_open: hours.is_open,
@@ -116,115 +114,17 @@ export default function Home() {
 		}
 	}
 
-	// // Function to fetch opening hours and update the state
-	// const getAllRestaurantsOpeningHours = async (restaurantId: string) => {
-	// 	const res = await fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/open/${restaurantId}`)
-	// 	const data = await res.json()
-
-	// 	// console.log('opening hours', data)
-	// 	//We put each "opening hours data" object (which consists
-	// 	//of restaurant_id and is_open - as seen in swagger response) in an array:
-	// 	//@ts-ignore
-	// 	setOpeningHours((prevHours) => [...prevHours, { hours: { restaurant_id: data.restaurant_id, is_open: data.is_open } }])
-	// }
-
-	// // Function to fetch price ranges and update the state
-	// const getAllRestaurantsPriceTiers = async (priceTierId: string) => {
-	// 	const res = await fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/price-range/${priceTierId}`)
-	// 	const data = await res.json()
-
-	// 	//We put each "price ranges data" object (which consists
-	// 	//of id and range - as seen in swagger response) in an array:
-	// 	//@ts-ignore
-	// 	setPriceTiers((prevPriceTiers) => [...prevPriceTiers, { priceTier: { id: data.id, tier: data.range } }])
-	// }
-	const filterRestaurants = (activeCategories: string[]) => {
-		const filtered = restaurants.filter((restaurant) => restaurant.filter_ids.some((fid) => activeCategories.includes(fid)))
-
-		const uniqueFiltered = filtered.reduce<Restaurant[]>((acc, current) => {
-			const x = acc.find((element) => element.id === current.id)
-			if (!x) {
-				return acc.concat([current])
-			} else {
-				return acc
-			}
-		}, [])
-
-		setFilteredRestaurants(uniqueFiltered)
-	}
 	const getAllFilters = async () => {
 		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/filter')
 		const data = await res.json()
 		setFilters(data.filters)
 	}
 
-	//////////////////////////////////////////////////////////
-	//OPTION 1
-	//DETTA AVSNITTET ÄR OPTION 1, LITE "SÄMRE", VARJE FILTER
-	//ÄR MER SEPARAT TROR JAG
-	//////////////////////////////////////////////////////////
-	// const toggleFilter = (filter: string) => {
-	// 	let newActiveFilters = []
-	// 	if (activeFilters.includes(filter)) {
-	// 		newActiveFilters = activeFilters.filter((f) => f !== filter)
-	// 	} else {
-	// 		newActiveFilters = [...activeFilters, filter]
-	// 	}
-	// 	setActiveFilters(newActiveFilters)
-	// 	filterRestaurants(newActiveFilters)
-	// }
-
-	// const togglePriceTier = (tierSymbol: string) => {
-	// 	//@ts-ignore
-	// 	const tierId = Object.keys(priceTiers).find((key) => priceTiers[key] === tierSymbol)
-	// 	//@ts-ignore
-	// 	setActivePriceTier((prevTier) => (prevTier === tierId ? null : tierId))
-	// 	//@ts-ignore
-	// 	filterRestaurantsByPriceTier(tierId)
-	// }
-
-	// const filterByTimeRange = (minTime: number, maxTime: number, index: number) => {
-	// 	if (activeTimeRange === index) {
-	// 		// Deselecting the same time range will reset the filter
-	// 		setActiveTimeRange(null)
-	// 		setFilteredRestaurants(restaurants)
-	// 	} else {
-	// 		// Apply the time range filter
-	// 		const filtered = restaurants.filter((restaurant) => {
-	// 			return restaurant.delivery_time_minutes >= minTime && (maxTime === Infinity || restaurant.delivery_time_minutes <= maxTime)
-	// 		})
-
-	// 		setFilteredRestaurants(filtered)
-	// 		setActiveTimeRange(index)
-	// 	}
-	// }
-
-	// const filterRestaurantsByPriceTier = (tierId: string) => {
-	// 	if (!tierId || tierId === activePriceTier) {
-	// 		setFilteredRestaurants(restaurants) // Clear filter if same tier is clicked again
-	// 	} else {
-	// 		const filtered = restaurants.filter((restaurant) => restaurant.price_range_id === tierId)
-	// 		setFilteredRestaurants(filtered)
-	// 	}
-	// }
-	//////////////////////////////////////////////////////////
-	//OPTION 1 SLUTAR HÄR (option 2 som är det aktiva och bättre
-	//är det som är aktivt här nedan)
-	//////////////////////////////////////////////////////////
-
-	//////////////////////////////////////////////////////////
-	//OPTION 2
-	//DETTA OPTION BÄST, TAR MED ALLA FILTER, enligt chat-gpt:
-	//This not only simplifies your codebase but also minimizes
-	//the potential for bugs by reducing the redundancy of filter
-	//application logic.  It is easier to maintain and
-	//ensures that any future additions or modifications to
-	//filtering criteria can be implemented more smoothly.
-	//////////////////////////////////////////////////////////
+	// Integrate all filters
 	const applyFilters = (priceTier = activePriceTier, categoryFilters = activeFilters, timeRange = activeTimeRange) => {
 		let result = restaurants
 
-		// Filter by category if any active category filters
+		// Filter by category if there are active category filters
 		if (categoryFilters.length > 0) {
 			result = result.filter((restaurant) => restaurant.filter_ids.some((fid) => categoryFilters.includes(fid)))
 		}
@@ -245,7 +145,7 @@ export default function Home() {
 		setFilteredRestaurants(result)
 	}
 
-	// Use this function in your toggle functions
+	// Use the applyFilters function in the toggle functions
 	const toggleFilter = (filter: string) => {
 		setActiveFilters((prevFilters) => {
 			const newActiveFilters = prevFilters.includes(filter) ? prevFilters.filter((f) => f !== filter) : [...prevFilters, filter]
@@ -270,10 +170,8 @@ export default function Home() {
 			return newRange
 		})
 	}
-	//////////////////////////////////////////////////////////
-	//HÄR SLUTAR OPTION 2
-	//////////////////////////////////////////////////////////
 
+	//Avoid scrolling on mobile view landing page
 	// useEffect(() => {
 	// 	document.body.style.overflowY = isModalOpen ? 'hidden' : 'auto'
 
@@ -309,7 +207,7 @@ export default function Home() {
 						</div>
 					</section>
 
-					<div className={styles.priceRangeContainer}>
+					<section className={styles.priceRangeContainer}>
 						<h2 className={styles.subtitle}>Price Range</h2>
 						<div className={styles.priceRangeCards}>
 							{['$', '$$', '$$$', '$$$$'].map((tierSymbol, i) => (
@@ -321,14 +219,15 @@ export default function Home() {
 								/>
 							))}
 						</div>
-					</div>
+					</section>
 				</div>
 				<section className={styles.layoutGrid}>
 					<aside className={styles.sidePanel}>
-						<section className={styles.foodCategory}>
+						<section className={`${styles.foodCategory} ${styles.filterCardContainerSidePanel}`}>
 							<h1>Filter</h1>
 							<h2 className={styles.subtitle}>Food Category</h2>
-							<section className={`${styles.filterCardContainer} ${styles.filterCardContainerSidePanel}`}>
+							{/* <section className={`${styles.filterCardContainer} ${styles.filterCardContainerSidePanel}`}> */}
+							<section className={styles.categoryCardContainer}>
 								{filters.map((filter: Filter) => (
 									<CategoryCard
 										key={filter.id}
@@ -355,12 +254,16 @@ export default function Home() {
 						</section>
 						<section className={styles.priceRangeContainer}>
 							<h2 className={styles.subtitle}>Price Range</h2>
-							{/* Detta är i desktop-vy, men jag gör allt med priceranges uppe i mobilecontainers */}
-							{/* <div className={styles.priceRangeCards}>
-								{priceRanges.map((priceRange, i) => (
-									<PriceRange priceRange={priceRange} key={i} />
+							<div className={styles.priceRangeCards}>
+								{['$', '$$', '$$$', '$$$$'].map((tierSymbol, i) => (
+									<PriceRange
+										key={i}
+										priceTier={tierSymbol}
+										isActive={activePriceTier === Object.keys(priceTiers).find((key) => priceTiers[key] === tierSymbol)}
+										onClick={() => togglePriceTier(tierSymbol)}
+									/>
 								))}
-							</div> */}
+							</div>
 						</section>
 					</aside>
 					<section className={styles.filterCardContainer}>
@@ -411,7 +314,6 @@ export default function Home() {
 									<RestaurantCard key={i} restaurant={restaurant}>
 										{/* Display Open/Closed on restaurant card */}
 										{(() => {
-											// Adjusting the access according to the simplified structure of openingHours
 											const foundItem = openingHours.find((item) => item.restaurant_id === restaurant.id)
 											return foundItem ? (
 												<>
@@ -424,8 +326,7 @@ export default function Home() {
 
 										{/* Display price range on restaurant card */}
 										{(() => {
-											// Adjusting the priceTier access according to the mapping structure of priceTiers
-											const priceTierLabel = priceTiers[restaurant.price_range_id] // Assuming priceTiers is a map from ID to tier label
+											const priceTierLabel = priceTiers[restaurant.price_range_id]
 											return priceTierLabel ? (
 												<>
 													<Badge label={priceTierLabel} />
