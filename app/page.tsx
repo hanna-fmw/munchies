@@ -171,16 +171,15 @@ export default function Home() {
 		})
 	}
 
-	//Avoid scrolling on mobile view landing page
-	// useEffect(() => {
-	// 	document.body.style.overflowY = isModalOpen ? 'hidden' : 'auto'
+	// Avoid scrolling on mobile view landing page
+	useEffect(() => {
+		document.body.style.overflowY = isModalOpen ? 'hidden' : 'auto'
 
-	// 	return () => {
-	// 		document.body.style.overflowY = 'auto'
-	// 		document.documentElement.style.overflowY = 'auto'
-	// 	}
-	// }, [isModalOpen])
-	//Nåt som att om modal är öppen så får sidan bara vara 100vh hög?
+		return () => {
+			document.body.style.overflowY = 'auto'
+			document.documentElement.style.overflowY = 'auto'
+		}
+	}, [isModalOpen])
 
 	return (
 		<>
