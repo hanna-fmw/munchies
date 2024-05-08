@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from '@/app/components/button/NewButton.module.css'
+import styles from '@/app/components/button/Button.module.css'
 
 type ButtonProps = {
 	onClick: () => void
