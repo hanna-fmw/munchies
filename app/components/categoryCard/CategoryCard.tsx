@@ -21,8 +21,7 @@ const CategoryCard = ({ src, filter, onClick, isActive }: CategoryCardProps) => 
 			<p className={styles.categoryName}>{filter.name}</p>
 			{src && (
 				<Image
-					src={src}
-					// src={`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/${filter.image_url}`}
+					src={src}					
 					width={40}
 					height={40}
 					alt={filter.name}

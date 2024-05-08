@@ -19,7 +19,6 @@ const RestaurantCard = ({ restaurant, children, className }: RestaurantCardProps
 				<div className={styles.deliveryTimeContainer}>
 					<div className={styles.topRowBadges}>
 						<div className={styles.deliveryTimeBadge}>{restaurant.delivery_time_minutes}&nbsp;min</div>
-						{/* In this case children is Badge */}
 						{children}
 					</div>
 				</div>

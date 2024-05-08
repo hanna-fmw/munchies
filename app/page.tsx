@@ -95,10 +95,8 @@ export default function Home() {
 					})
 				)
 
-				// Execute promises simultaneously
 				const [priceTiers, openingHours] = await Promise.all([Promise.all(priceTierPromises), Promise.all(openingHoursPromises)])
 
-				// Map price tier ID to tier symbol (dollar sign)
 				const priceTierMapping = priceTiers.reduce(
 					(acc, pt) => ({
 						...acc,
@@ -107,13 +105,11 @@ export default function Home() {
 					{}
 				)
 
-				// Store opening hours in an object
 				const openingHoursMapping = openingHours.map((hours) => ({
 					restaurant_id: hours.restaurant_id,
 					is_open: hours.is_open,
 				}))
 
-				// Update states with fetched data
 				setPriceTiers(priceTierMapping)
 				setRestaurants(data.restaurants)
 				setOpeningHours(openingHoursMapping)
@@ -138,21 +134,17 @@ export default function Home() {
 		}
 	}
 
-	// Integrate all filters
 	const applyFilters = (priceTier = activePriceTier, categoryFilters = activeFilters, timeRange = activeTimeRange) => {
 		let result = restaurants
 
-		// Filter by category if there are active category filters
 		if (categoryFilters.length > 0) {
 			result = result.filter((restaurant) => restaurant.filter_ids.some((fid) => categoryFilters.includes(fid)))
 		}
 
-		// Filter by price range if selected
 		if (priceTier) {
 			result = result.filter((restaurant) => restaurant.price_range_id === priceTier)
 		}
 
-		// Filter by delivery time if selected
 		if (timeRange !== null) {
 			const { minTime, maxTime } = timeRanges[timeRange]
 			result = result.filter((restaurant) => {
@@ -163,7 +155,6 @@ export default function Home() {
 		setFilteredRestaurants(result)
 	}
 
-	// Use the applyFilters function in the toggle functions
 	const toggleFilter = (filter: string) => {
 		setActiveFilters((prevFilters) => {
 			const newActiveFilters = prevFilters.includes(filter) ? prevFilters.filter((f) => f !== filter) : [...prevFilters, filter]
@@ -193,7 +184,6 @@ export default function Home() {
 		})
 	}
 
-	// Avoid scrolling on mobile view landing page
 	useEffect(() => {
 		document.body.style.overflowY = isModalOpen ? 'hidden' : 'auto'
 
@@ -308,7 +298,6 @@ export default function Home() {
 
 									return (
 										<RestaurantCard key={i} className={cardClass} restaurant={filteredRestaurant}>
-											{/* Display Open/Closed on restaurant card in filtered restaurants view */}
 											{foundItem ? (
 												<>
 													<Badge isOpen={foundItem.is_open} label={foundItem.is_open ? 'Open' : 'Closed'} />
@@ -316,9 +305,9 @@ export default function Home() {
 											) : (
 												<p>{filteredRestaurant.name}</p>
 											)}
-											{/* Display price range on restaurant card in filtered restaurants view */}
+
 											{(() => {
-												const priceTierLabel = priceTiers[filteredRestaurant.price_range_id] // Adjusted for direct map access
+												const priceTierLabel = priceTiers[filteredRestaurant.price_range_id]
 												return priceTierLabel ? (
 													<>
 														<Badge label={priceTierLabel} />
@@ -336,11 +325,10 @@ export default function Home() {
 								{restaurants.map((restaurant, i) => {
 									const foundItem = openingHours.find((item) => item.restaurant_id === restaurant.id)
 									const isOpen = foundItem ? foundItem.is_open : false
-									const cardClass = isOpen ? '' : styles.restaurantCardClosed // Use the class from home.module.css
+									const cardClass = isOpen ? '' : styles.restaurantCardClosed
 
 									return (
 										<RestaurantCard key={i} restaurant={restaurant} className={cardClass}>
-											{/* Display Open/Closed on restaurant card */}
 											{foundItem ? (
 												<>
 													<Badge isOpen={foundItem.is_open} label={foundItem.is_open ? 'Open' : 'Closed'} />
@@ -349,7 +337,6 @@ export default function Home() {
 												<p>{restaurant.name}</p>
 											)}
 
-											{/* Display price range on restaurant card */}
 											{(() => {
 												const priceTierLabel = priceTiers[restaurant.price_range_id]
 												return priceTierLabel ? (
