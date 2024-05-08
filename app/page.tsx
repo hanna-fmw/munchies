@@ -1,11 +1,11 @@
-//@ts-nocheck
 'use client'
 import styles from './home.module.css'
 import Modal from './components/modal/Modal'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import CategoryCard from './components/categoryCard/CategoryCard'
-import DeliveryTimeBtn from './components/deliveryTimeBtn/DeliveryTimeBtn'
+import DeliveryTimeBadge from './components/deliveryTimeBtn/DeliveryTimeBadge'
+
 import logoDark from '@/public/logo-dark.png'
 import RestaurantCard from './components/restaurantCard/RestaurantCard'
 import PriceRange from './components/priceRange/PriceRange'
@@ -27,17 +27,20 @@ type Filter = {
 }
 
 type Hours = {
-	hours: {
-		restaurant_id: string
-		is_open: boolean
-	}
+	restaurant_id: string
+	is_open: boolean
 }
 
-type PriceTier = {
-	priceTier: {
-		id: string
-		tier: string
-	}
+// type PriceTiers = {
+// 	priceTier: {
+// 		id: string
+// 		tier: string
+// 		[key: string]: string;
+// 	}
+// }
+
+type PriceTiers = {
+	[key: string]: string
 }
 
 export default function Home() {
@@ -50,7 +53,7 @@ export default function Home() {
 	const [deliveryTimeRange, setDeliveryTimeRange] = useState<string[]>([])
 	const [activeTimeRange, setActiveTimeRange] = useState<number | null>(null)
 
-	const [priceTiers, setPriceTiers] = useState<PriceTier[]>([])
+	const [priceTiers, setPriceTiers] = useState<PriceTiers>({})
 	const [activePriceTier, setActivePriceTier] = useState<string | null>(null)
 
 	const [openingHours, setOpeningHours] = useState<Hours[]>([])
@@ -81,11 +84,11 @@ export default function Home() {
 		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/restaurants')
 		const data = await res.json()
 		if (data.restaurants.length > 0) {
-			const priceTierPromises = data.restaurants.map((restaurant) =>
+			const priceTierPromises = data.restaurants.map((restaurant: Restaurant) =>
 				fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/price-range/${restaurant.price_range_id}`).then((res) => res.json())
 			)
 
-			const openingHoursPromises = data.restaurants.map((restaurant) =>
+			const openingHoursPromises = data.restaurants.map((restaurant: Restaurant) =>
 				fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/open/${restaurant.id}`).then((res) => res.json())
 			)
 
@@ -149,24 +152,28 @@ export default function Home() {
 	const toggleFilter = (filter: string) => {
 		setActiveFilters((prevFilters) => {
 			const newActiveFilters = prevFilters.includes(filter) ? prevFilters.filter((f) => f !== filter) : [...prevFilters, filter]
-			applyFilters(activePriceTier, newActiveFilters, activeTimeRange) // Use new state directly
+			applyFilters(activePriceTier, newActiveFilters, activeTimeRange)
 			return newActiveFilters
 		})
 	}
 
 	const togglePriceTier = (tierSymbol: string) => {
 		const tierId = Object.keys(priceTiers).find((key) => priceTiers[key] === tierSymbol)
+
 		setActivePriceTier((prevTier) => {
 			const newTier = prevTier === tierId ? null : tierId
-			applyFilters(newTier, activeFilters, activeTimeRange) // Pass new state directly
-			return newTier
+			if (newTier !== undefined) {
+				applyFilters(newTier, activeFilters, activeTimeRange)
+				return newTier
+			}
+			return prevTier
 		})
 	}
 
 	const filterByTimeRange = (minTime: number, maxTime: number, index: number) => {
 		setActiveTimeRange((prevRange) => {
 			const newRange = prevRange === index ? null : index
-			applyFilters(activePriceTier, activeFilters, newRange) // Use new state directly
+			applyFilters(activePriceTier, activeFilters, newRange)
 			return newRange
 		})
 	}
@@ -191,7 +198,7 @@ export default function Home() {
 						<h2 className={styles.subtitle}>Delivery Time</h2>
 						<div className={styles.timeRangeCards}>
 							{timeRanges.map((timeRange, index) => (
-								<DeliveryTimeBtn
+								<DeliveryTimeBadge
 									key={index}
 									onClick={() => filterByTimeRange(timeRange.minTime, timeRange.maxTime, index)}
 									isActive={activeTimeRange === index}
@@ -241,7 +248,7 @@ export default function Home() {
 							<h2 className={styles.subtitle}>Delivery Time</h2>
 							<div className={styles.timeRangeCards}>
 								{timeRanges.map((timeRange, index) => (
-									<DeliveryTimeBtn
+									<DeliveryTimeBadge
 										key={index}
 										onClick={() => filterByTimeRange(timeRange.minTime, timeRange.maxTime, index)}
 										isActive={activeTimeRange === index}
