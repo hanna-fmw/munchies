@@ -9,16 +9,17 @@ type RestaurantCardProps = {
 		delivery_time_minutes: number
 	}
 	children: React.ReactNode
+	className?: string
 }
 
-const RestaurantCard = ({ restaurant, children }: RestaurantCardProps) => {
+const RestaurantCard = ({ restaurant, children, className }: RestaurantCardProps) => {
 	return (
-		<section className={styles.restaurantCard}>
+		<section className={`${styles.restaurantCard} ${className || ''}`}>
 			<aside className={styles.topRow}>
 				<div className={styles.deliveryTimeContainer}>
 					<div className={styles.topRowBadges}>
 						<div className={styles.deliveryTimeBadge}>{restaurant.delivery_time_minutes}&nbsp;min</div>
-						{/* In this case children is the OpenHoursBadge */}
+						{/* In this case children is Badge */}
 						{children}
 					</div>
 				</div>

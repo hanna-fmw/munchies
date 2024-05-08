@@ -226,7 +226,6 @@ export default function Home() {
 						<section className={`${styles.foodCategory} ${styles.filterCardContainerSidePanel}`}>
 							<h1>Filter</h1>
 							<h2 className={styles.subtitle}>Food Category</h2>
-							{/* <section className={`${styles.filterCardContainer} ${styles.filterCardContainerSidePanel}`}> */}
 							<section className={styles.categoryCardContainer}>
 								{filters.map((filter: Filter) => (
 									<CategoryCard
@@ -281,62 +280,68 @@ export default function Home() {
 						<h1 className={`${styles.display} ${styles.h2}`}>Restaurants</h1>
 						{filteredRestaurants.length > 0 ? (
 							<article className={styles.restaurantCardContainer}>
-								{filteredRestaurants.map((filteredRestaurant, i) => (
-									<RestaurantCard key={i} restaurant={filteredRestaurant}>
-										{/* Display Open/Closed on restaurant card in filtered restaurants view */}
-										{(() => {
-											const foundItem = openingHours.find((item) => item.restaurant_id === filteredRestaurant.id)
-											return foundItem ? (
+								{filteredRestaurants.map((filteredRestaurant, i) => {
+									const foundItem = openingHours.find((item) => item.restaurant_id === filteredRestaurant.id)
+									const isOpen = foundItem ? foundItem.is_open : false // Safely check if the foundItem exists and its open status
+									const cardClass = isOpen ? styles.restaurantCard : `${styles.restaurantCard} ${styles.restaurantCardClosed}`
+
+									return (
+										<RestaurantCard key={i} className={cardClass} restaurant={filteredRestaurant}>
+											{/* Display Open/Closed on restaurant card in filtered restaurants view */}
+											{foundItem ? (
 												<>
 													<Badge isOpen={foundItem.is_open} label={foundItem.is_open ? 'Open' : 'Closed'} />
 												</>
 											) : (
 												<p>{filteredRestaurant.name}</p>
-											)
-										})()}
-										{/* Display price range on restaurant card in filtered restaurants view */}
-										{(() => {
-											const priceTierLabel = priceTiers[filteredRestaurant.price_range_id] // Adjusted for direct map access
-											return priceTierLabel ? (
-												<>
-													<Badge label={priceTierLabel} />
-												</>
-											) : (
-												<p>{filteredRestaurant.name}</p>
-											)
-										})()}
-									</RestaurantCard>
-								))}
+											)}
+											{/* Display price range on restaurant card in filtered restaurants view */}
+											{(() => {
+												const priceTierLabel = priceTiers[filteredRestaurant.price_range_id] // Adjusted for direct map access
+												return priceTierLabel ? (
+													<>
+														<Badge label={priceTierLabel} />
+													</>
+												) : (
+													<p>{filteredRestaurant.name}</p>
+												)
+											})()}
+										</RestaurantCard>
+									)
+								})}
 							</article>
 						) : (
 							<article className={styles.restaurantCardContainer}>
-								{restaurants.map((restaurant, i) => (
-									<RestaurantCard key={i} restaurant={restaurant}>
-										{/* Display Open/Closed on restaurant card */}
-										{(() => {
-											const foundItem = openingHours.find((item) => item.restaurant_id === restaurant.id)
-											return foundItem ? (
+								{restaurants.map((restaurant, i) => {
+									const foundItem = openingHours.find((item) => item.restaurant_id === restaurant.id)
+									const isOpen = foundItem ? foundItem.is_open : false
+									const cardClass = isOpen ? '' : styles.restaurantCardClosed // Use the class from home.module.css
+
+									return (
+										<RestaurantCard key={i} restaurant={restaurant} className={cardClass}>
+											{/* Display Open/Closed on restaurant card */}
+											{foundItem ? (
 												<>
 													<Badge isOpen={foundItem.is_open} label={foundItem.is_open ? 'Open' : 'Closed'} />
 												</>
 											) : (
 												<p>{restaurant.name}</p>
-											)
-										})()}
+											)}
 
-										{/* Display price range on restaurant card */}
-										{(() => {
-											const priceTierLabel = priceTiers[restaurant.price_range_id]
-											return priceTierLabel ? (
-												<>
-													<Badge label={priceTierLabel} />
-												</>
-											) : (
-												<p>{restaurant.name}</p>
-											)
-										})()}
-									</RestaurantCard>
-								))}
+											{/* Display price range on restaurant card */}
+											{(() => {
+												const priceTierLabel = priceTiers[restaurant.price_range_id]
+												return priceTierLabel ? (
+													<>
+														<Badge label={priceTierLabel} />
+													</>
+												) : (
+													<p>{restaurant.name}</p>
+												)
+											})()}
+										</RestaurantCard>
+									)
+								})}
 							</article>
 						)}
 					</section>

@@ -60,6 +60,11 @@
 	display: none;
 }
 
+.restaurantCardClosed {
+	filter: grayscale(100%);
+	opacity: 0.4;
+}
+
 @media (min-width: 550px) {
 	.filterCardContainer {
 		width: 100%;
