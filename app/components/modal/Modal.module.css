@@ -51,7 +51,7 @@
 	font-family: var(--font-family-primary);
 }
 
-@media (min-width: 376px) {
+@media (min-width: 426px) {
 	.modalOverlay {
 		display: none;
 	}
