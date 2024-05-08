@@ -31,6 +31,7 @@
 }
 
 .deliveryTimeBadge {
+	font-family: var(--font-family-primary);
 	padding: 8px 12px 8px 12px;
 	border-radius: 8px;
 	border: var(--border-1);
