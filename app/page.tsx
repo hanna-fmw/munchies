@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import CategoryCard from './components/categoryCard/CategoryCard'
 import DeliveryTimeBadge from './components/deliveryTimeBtn/DeliveryTimeBadge'
-
 import logoDark from '@/public/logo-dark.png'
 import RestaurantCard from './components/restaurantCard/RestaurantCard'
 import PriceRange from './components/priceRange/PriceRange'
@@ -30,14 +29,6 @@ type Hours = {
 	restaurant_id: string
 	is_open: boolean
 }
-
-// type PriceTiers = {
-// 	priceTier: {
-// 		id: string
-// 		tier: string
-// 		[key: string]: string;
-// 	}
-// }
 
 type PriceTiers = {
 	[key: string]: string
@@ -81,46 +72,70 @@ export default function Home() {
 	}, [activePriceTier, priceTiers])
 
 	const getAllRestaurants = async () => {
-		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/restaurants')
-		const data = await res.json()
-		if (data.restaurants.length > 0) {
-			const priceTierPromises = data.restaurants.map((restaurant: Restaurant) =>
-				fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/price-range/${restaurant.price_range_id}`).then((res) => res.json())
-			)
+		try {
+			const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/restaurants')
 
-			const openingHoursPromises = data.restaurants.map((restaurant: Restaurant) =>
-				fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/open/${restaurant.id}`).then((res) => res.json())
-			)
+			if (!res.ok) {
+				throw new Error(`HTTP error! status: ${res.status}`)
+			}
 
-			// Execute promises simultaneously
-			const [priceTiers, openingHours] = await Promise.all([Promise.all(priceTierPromises), Promise.all(openingHoursPromises)])
+			const data = await res.json()
+			if (data.restaurants.length > 0) {
+				const priceTierPromises = data.restaurants.map((restaurant: Restaurant) =>
+					fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/price-range/${restaurant.price_range_id}`).then((res) => {
+						if (!res.ok) throw new Error(`Failed to fetch price tier for restaurant ID ${restaurant.id}`)
+						return res.json()
+					})
+				)
 
-			// Map price tier ID to tier symbol (dollar sign)
-			const priceTierMapping = priceTiers.reduce(
-				(acc, pt) => ({
-					...acc,
-					[pt.id]: pt.range,
-				}),
-				{}
-			)
+				const openingHoursPromises = data.restaurants.map((restaurant: Restaurant) =>
+					fetch(`https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/open/${restaurant.id}`).then((res) => {
+						if (!res.ok) throw new Error(`Failed to fetch opening hours for restaurant ID ${restaurant.id}`)
+						return res.json()
+					})
+				)
 
-			// Store opening hours in an object
-			const openingHoursMapping = openingHours.map((hours) => ({
-				restaurant_id: hours.restaurant_id,
-				is_open: hours.is_open,
-			}))
+				// Execute promises simultaneously
+				const [priceTiers, openingHours] = await Promise.all([Promise.all(priceTierPromises), Promise.all(openingHoursPromises)])
 
-			// Update states with fetched data
-			setPriceTiers(priceTierMapping)
-			setRestaurants(data.restaurants)
-			setOpeningHours(openingHoursMapping)
+				// Map price tier ID to tier symbol (dollar sign)
+				const priceTierMapping = priceTiers.reduce(
+					(acc, pt) => ({
+						...acc,
+						[pt.id]: pt.range,
+					}),
+					{}
+				)
+
+				// Store opening hours in an object
+				const openingHoursMapping = openingHours.map((hours) => ({
+					restaurant_id: hours.restaurant_id,
+					is_open: hours.is_open,
+				}))
+
+				// Update states with fetched data
+				setPriceTiers(priceTierMapping)
+				setRestaurants(data.restaurants)
+				setOpeningHours(openingHoursMapping)
+			}
+		} catch (error) {
+			console.error('Failed to fetch data for restaurants:', error)
 		}
 	}
 
 	const getAllFilters = async () => {
-		const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/filter')
-		const data = await res.json()
-		setFilters(data.filters)
+		try {
+			const res = await fetch('https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api/filter')
+
+			if (!res.ok) {
+				throw new Error(`HTTP error! status: ${res.status}`)
+			}
+
+			const data = await res.json()
+			setFilters(data.filters)
+		} catch (error) {
+			console.error('Failed to fetch categories:', error)
+		}
 	}
 
 	// Integrate all filters
